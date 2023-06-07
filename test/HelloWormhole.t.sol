@@ -89,7 +89,6 @@ contract HelloWormholeTest is Test {
 
         bytes[] memory encodedVms = new bytes[](2);
         for (uint i = 0; i < publishedMessages.length; i++) {
-            console.log("above fetch signed message");
             encodedVms[i] = guardian.fetchSignedMessageFromLogs(
                 publishedMessages[i],
                 guardian.wormhole().chainId(),
@@ -102,7 +101,6 @@ contract HelloWormholeTest is Test {
             DEVNET_GUARDIAN_PK
         );
         for (uint i = 0; i < encodedVms.length; i++) {
-            console.log("above create wrapped");
             tokenBridgeTarget.createWrapped(encodedVms[i]);
         }
         console.log("below for loop");
@@ -174,10 +172,10 @@ contract HelloWormholeTest is Test {
             ix.encodedExecutionInfo
         );
 
-        console.log(fromWormholeFormat(deliveryParsed.emitterAddress));
-        console.log(fromWormholeFormat(parsedTransferVaaA.emitterAddress));
-        console.log(address(hello));
-        console.log(address(this));
+        console.log("deliveryVaa emitter      ", fromWormholeFormat(deliveryParsed.emitterAddress));
+        console.log("token transfer emitter   ",fromWormholeFormat(parsedTransferVaaA.emitterAddress));
+        console.log("hello contract addr      ",address(hello));
+        console.log("forge test contract addr ",address(this));
 
         relayerTarget.deliver{
             value: ix.requestedReceiverValue +

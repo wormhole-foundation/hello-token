@@ -1,0 +1,31 @@
+{
+  "erc20s": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    [
+      "0x7C4bB4B80b9713275D3daD09F778F0DAc2Cdf28e",
+      "0x5367704a668F307492785649F679751E22fB8b5C"
+    ]
+  ],
+  "helloTokens": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    "0x3A8c6b80Cef94Bb9620E32eFBE76ba54937152c9",
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    "0x1C3465F7348823d8bc157591E253c65A4b28e625"
+  ]
+}

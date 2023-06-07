@@ -201,9 +201,7 @@ contract WormholeSimulator {
         IWormhole.VM memory vm_;
 
         // Parse wormhole message from ethereum logs
-        console.log("above parse");
         vm_ = parseVMFromLogs(log);
-        console.log("below parsed");
 
         // Set empty body values before computing the hash
         vm_.version = uint8(1);

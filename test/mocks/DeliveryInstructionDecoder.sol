@@ -33,39 +33,24 @@ function decodeDeliveryInstruction(
 ) view returns (DeliveryInstruction memory strct) {
     uint256 offset = checkUint8(encoded, 0, PAYLOAD_ID_DELIVERY_INSTRUCTION);
 
-    console.log("a");
     uint256 requestedReceiverValue;
-    console.log("b");
     uint256 extraReceiverValue;
 
     (strct.targetChain, offset) = encoded.asUint16Unchecked(offset);
-    console.log("c");
     (strct.targetAddress, offset) = encoded.asBytes32Unchecked(offset);
-    console.log("d");
     (strct.payload, offset) = decodeBytes(encoded, offset);
-    console.log("d");
     (requestedReceiverValue, offset) = encoded.asUint256Unchecked(offset);
-    console.log("d");
     (extraReceiverValue, offset) = encoded.asUint256Unchecked(offset);
-    console.log("d");
     (strct.encodedExecutionInfo, offset) = decodeBytes(encoded, offset);
-    console.log("d");
     (strct.refundChain, offset) = encoded.asUint16Unchecked(offset);
-    console.log("d");
     (strct.refundAddress, offset) = encoded.asBytes32Unchecked(offset);
-    console.log("d");
     (strct.refundDeliveryProvider, offset) = encoded.asBytes32Unchecked(offset);
-    console.log("d");
     (strct.sourceDeliveryProvider, offset) = encoded.asBytes32Unchecked(offset);
-    console.log("d");
     (strct.senderAddress, offset) = encoded.asBytes32Unchecked(offset);
-    console.log("d");
     (strct.vaaKeys, offset) = decodeVaaKeyArray(encoded, offset);
-    console.log("d");
 
     strct.requestedReceiverValue = requestedReceiverValue;
     strct.extraReceiverValue = extraReceiverValue;
-    console.log("d");
 
     checkLength(encoded, offset);
 }
