@@ -1,4 +1,10 @@
 {
+  "name": "hello-tokens",
+  "version": "1.0.0",
+  "main": "ts-scripts/main.ts",
+  "repository": "git@github.com:JoeHowarth/hello-token.git",
+  "author": "Joe Howarth <josephehowarth@gmail.com>",
+  "license": "MIT",
   "scripts": {
     "main": "ts-node ./ts-scripts/main.ts",
     "deploy": "ts-node ./ts-scripts/deploy.ts",

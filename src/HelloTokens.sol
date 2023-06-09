@@ -7,20 +7,24 @@ import "./interfaces/ITokenBridge.sol";
 import "./interfaces/IWormhole.sol";
 import "openzeppelin/token/ERC20/IERC20.sol";
 
-contract HelloTokens is IWormholeReceiver {
-    event LiquidityProvided(
-        uint16 senderChain,
-        address sender,
-        address tokenA,
-        address tokenB,
-        uint256 amount
-    );
+import "forge-std/console.sol";
 
-    uint256 constant GAS_LIMIT = 50_000;
+struct LiquidityProvided {
+    uint16 senderChain;
+    address sender;
+    address tokenA;
+    address tokenB;
+    uint256 amount;
+}
+
+contract HelloTokens is IWormholeReceiver {
+    uint256 constant GAS_LIMIT = 360_000;
 
     IWormholeRelayer public immutable wormholeRelayer;
     ITokenBridge public immutable tokenBridge;
     IWormhole public immutable wormhole;
+
+    LiquidityProvided[] public liquidityProvidedHistory;
 
     constructor(
         address _wormholeRelayer,
@@ -51,11 +55,13 @@ contract HelloTokens is IWormholeReceiver {
     ) public payable {
         // emit token transfers
         IERC20(tokenA).transferFrom(msg.sender, address(this), amount);
+        IERC20(tokenA).approve(address(tokenBridge), amount);
         uint64 sequenceA = tokenBridge.transferTokens{
             value: wormhole.messageFee()
         }(tokenA, amount, targetChain, toWormholeFormat(targetAddress), 0, 0);
 
         IERC20(tokenB).transferFrom(msg.sender, address(this), amount);
+        IERC20(tokenB).approve(address(tokenBridge), amount);
         uint64 sequenceB = tokenBridge.transferTokens{
             value: wormhole.messageFee()
         }(tokenB, amount, targetChain, toWormholeFormat(targetAddress), 0, 0);
@@ -73,11 +79,7 @@ contract HelloTokens is IWormholeReceiver {
             chainId: wormhole.chainId()
         });
 
-        (uint256 cost, ) = wormholeRelayer.quoteEVMDeliveryPrice(
-            targetChain,
-            0,
-            GAS_LIMIT
-        );
+        uint256 cost = quoteRemoteLP(targetChain);
 
         // encode payload
         bytes memory lpProvider = abi.encode(msg.sender);
@@ -86,7 +88,7 @@ contract HelloTokens is IWormholeReceiver {
             targetChain,
             targetAddress,
             lpProvider,
-            0, // no receiver value needed since we're just passing a message + wrapped token
+            0, // no receiver value needed since we're just passing a message + wrapped tokens
             GAS_LIMIT,
             additionalVaas
         );
@@ -103,19 +105,21 @@ contract HelloTokens is IWormholeReceiver {
         uint16 sourceChain,
         bytes32 // deliveryHash
     ) public payable override {
-        // address lpProvider = abi.decode(payload, (address));
+        address lpProvider = abi.decode(payload, (address));
 
-        // ITokenBridge.Transfer memory transferA = tokenBridge.parseTransfer(
-        //     additionalVaas[0]
-        // );
-        // tokenBridge.completeTransfer(additionalVaas[0]);
+        IWormhole.VM memory parsedVMA = wormhole.parseVM(additionalVaas[0]);
+        ITokenBridge.Transfer memory transferA = tokenBridge.parseTransfer(
+            parsedVMA.payload
+        );
+        tokenBridge.completeTransfer(additionalVaas[0]);
 
-        // ITokenBridge.Transfer memory transferB = tokenBridge.parseTransfer(
-        //     additionalVaas[1]
-        // );
-        // tokenBridge.completeTransfer(additionalVaas[1]);
+        IWormhole.VM memory parsedVMB = wormhole.parseVM(additionalVaas[1]);
+        ITokenBridge.Transfer memory transferB = tokenBridge.parseTransfer(
+            parsedVMB.payload
+        );
+        tokenBridge.completeTransfer(additionalVaas[1]);
 
-        // provideLiquidity(sourceChain, lpProvider, transferA, transferB);
+        provideLiquidity(sourceChain, lpProvider, transferA, transferB);
     }
 
     // dummy function for demonstration purposes
@@ -125,13 +129,23 @@ contract HelloTokens is IWormholeReceiver {
         ITokenBridge.Transfer memory transferA,
         ITokenBridge.Transfer memory transferB
     ) internal {
-        emit LiquidityProvided(
-            sourceChain,
-            lpProvider,
-            fromWormholeFormat(transferA.tokenAddress),
-            fromWormholeFormat(transferB.tokenAddress),
-            transferA.amount
+        liquidityProvidedHistory.push(
+            LiquidityProvided(
+                sourceChain,
+                lpProvider,
+                fromWormholeFormat(transferA.tokenAddress),
+                fromWormholeFormat(transferB.tokenAddress),
+                transferA.amount * 1e10 // Note: wormhole normalizes values to 8 decimals for cross-ecosystem compatibility
+            )
         );
+    }
+
+    function getLiquiditiesProvidedHistory()
+        public
+        view
+        returns (LiquidityProvided[] memory)
+    {
+        return liquidityProvidedHistory;
     }
 }
 
