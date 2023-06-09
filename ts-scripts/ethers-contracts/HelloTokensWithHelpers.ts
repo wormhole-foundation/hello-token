@@ -13,21 +13,41 @@ import type {
   Signer,
   utils,
 } from "ethers";
-import type {
-  FunctionFragment,
-  Result,
-  EventFragment,
-} from "@ethersproject/abi";
+import type { FunctionFragment, Result } from "@ethersproject/abi";
 import type { Listener, Provider } from "@ethersproject/providers";
 import type {
   TypedEventFilter,
   TypedEvent,
   TypedListener,
   OnEvent,
-} from "../common";
+} from "./common";
 
-export interface HelloTokensInterface extends utils.Interface {
+export type LiquidityProvidedStruct = {
+  senderChain: BigNumberish;
+  sender: string;
+  tokenA: string;
+  tokenB: string;
+  amount: BigNumberish;
+};
+
+export type LiquidityProvidedStructOutput = [
+  number,
+  string,
+  string,
+  string,
+  BigNumber
+] & {
+  senderChain: number;
+  sender: string;
+  tokenA: string;
+  tokenB: string;
+  amount: BigNumber;
+};
+
+export interface HelloTokensWithHelpersInterface extends utils.Interface {
   functions: {
+    "getLiquiditiesProvidedHistory()": FunctionFragment;
+    "liquidityProvidedHistory(uint256)": FunctionFragment;
     "quoteRemoteLP(uint16)": FunctionFragment;
     "receiveWormholeMessages(bytes,bytes[],bytes32,uint16,bytes32)": FunctionFragment;
     "sendRemoteLP(uint16,address,uint256,address,address)": FunctionFragment;
@@ -38,6 +58,8 @@ export interface HelloTokensInterface extends utils.Interface {
 
   getFunction(
     nameOrSignatureOrTopic:
+      | "getLiquiditiesProvidedHistory"
+      | "liquidityProvidedHistory"
       | "quoteRemoteLP"
       | "receiveWormholeMessages"
       | "sendRemoteLP"
@@ -46,6 +68,14 @@ export interface HelloTokensInterface extends utils.Interface {
       | "wormholeRelayer"
   ): FunctionFragment;
 
+  encodeFunctionData(
+    functionFragment: "getLiquiditiesProvidedHistory",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "liquidityProvidedHistory",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "quoteRemoteLP",
     values: [BigNumberish]
@@ -69,6 +99,14 @@ export interface HelloTokensInterface extends utils.Interface {
   ): string;
 
   decodeFunctionResult(
+    functionFragment: "getLiquiditiesProvidedHistory",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "liquidityProvidedHistory",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "quoteRemoteLP",
     data: BytesLike
   ): Result;
@@ -90,34 +128,15 @@ export interface HelloTokensInterface extends utils.Interface {
     data: BytesLike
   ): Result;
 
-  events: {
-    "LiquidityProvided(uint16,address,address,address,uint256)": EventFragment;
-  };
-
-  getEvent(nameOrSignatureOrTopic: "LiquidityProvided"): EventFragment;
+  events: {};
 }
 
-export interface LiquidityProvidedEventObject {
-  senderChain: number;
-  sender: string;
-  tokenA: string;
-  tokenB: string;
-  amount: BigNumber;
-}
-export type LiquidityProvidedEvent = TypedEvent<
-  [number, string, string, string, BigNumber],
-  LiquidityProvidedEventObject
->;
-
-export type LiquidityProvidedEventFilter =
-  TypedEventFilter<LiquidityProvidedEvent>;
-
-export interface HelloTokens extends BaseContract {
+export interface HelloTokensWithHelpers extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: HelloTokensInterface;
+  interface: HelloTokensWithHelpersInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -139,6 +158,23 @@ export interface HelloTokens extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    getLiquiditiesProvidedHistory(
+      overrides?: CallOverrides
+    ): Promise<[LiquidityProvidedStructOutput[]]>;
+
+    liquidityProvidedHistory(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [number, string, string, string, BigNumber] & {
+        senderChain: number;
+        sender: string;
+        tokenA: string;
+        tokenB: string;
+        amount: BigNumber;
+      }
+    >;
+
     quoteRemoteLP(
       targetChain: BigNumberish,
       overrides?: CallOverrides
@@ -168,6 +204,23 @@ export interface HelloTokens extends BaseContract {
 
     wormholeRelayer(overrides?: CallOverrides): Promise<[string]>;
   };
+
+  getLiquiditiesProvidedHistory(
+    overrides?: CallOverrides
+  ): Promise<LiquidityProvidedStructOutput[]>;
+
+  liquidityProvidedHistory(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<
+    [number, string, string, string, BigNumber] & {
+      senderChain: number;
+      sender: string;
+      tokenA: string;
+      tokenB: string;
+      amount: BigNumber;
+    }
+  >;
 
   quoteRemoteLP(
     targetChain: BigNumberish,
@@ -199,6 +252,23 @@ export interface HelloTokens extends BaseContract {
   wormholeRelayer(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
+    getLiquiditiesProvidedHistory(
+      overrides?: CallOverrides
+    ): Promise<LiquidityProvidedStructOutput[]>;
+
+    liquidityProvidedHistory(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [number, string, string, string, BigNumber] & {
+        senderChain: number;
+        sender: string;
+        tokenA: string;
+        tokenB: string;
+        amount: BigNumber;
+      }
+    >;
+
     quoteRemoteLP(
       targetChain: BigNumberish,
       overrides?: CallOverrides
@@ -229,24 +299,18 @@ export interface HelloTokens extends BaseContract {
     wormholeRelayer(overrides?: CallOverrides): Promise<string>;
   };
 
-  filters: {
-    "LiquidityProvided(uint16,address,address,address,uint256)"(
-      senderChain?: null,
-      sender?: null,
-      tokenA?: null,
-      tokenB?: null,
-      amount?: null
-    ): LiquidityProvidedEventFilter;
-    LiquidityProvided(
-      senderChain?: null,
-      sender?: null,
-      tokenA?: null,
-      tokenB?: null,
-      amount?: null
-    ): LiquidityProvidedEventFilter;
-  };
+  filters: {};
 
   estimateGas: {
+    getLiquiditiesProvidedHistory(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    liquidityProvidedHistory(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     quoteRemoteLP(
       targetChain: BigNumberish,
       overrides?: CallOverrides
@@ -278,6 +342,15 @@ export interface HelloTokens extends BaseContract {
   };
 
   populateTransaction: {
+    getLiquiditiesProvidedHistory(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    liquidityProvidedHistory(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     quoteRemoteLP(
       targetChain: BigNumberish,
       overrides?: CallOverrides

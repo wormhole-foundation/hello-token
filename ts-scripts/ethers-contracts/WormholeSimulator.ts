@@ -97,7 +97,7 @@ export interface WormholeSimulatorInterface extends utils.Interface {
     "encodeAndSignMessage((uint8,uint32,uint32,uint16,bytes32,uint64,uint8,bytes,uint32,(bytes32,bytes32,uint8,uint8)[],bytes32))": FunctionFragment;
     "encodeObservation((uint8,uint32,uint32,uint16,bytes32,uint64,uint8,bytes,uint32,(bytes32,bytes32,uint8,uint8)[],bytes32))": FunctionFragment;
     "fetchSignedBatchVAAFromLogs((bytes32[],bytes,address)[],uint32,uint16,address)": FunctionFragment;
-    "fetchSignedMessageFromLogs((bytes32[],bytes,address),uint16,address)": FunctionFragment;
+    "fetchSignedMessageFromLogs((bytes32[],bytes,address),uint16)": FunctionFragment;
     "fetchWormholeMessageFromLog((bytes32[],bytes,address)[],uint8)": FunctionFragment;
     "setMessageFee(uint256)": FunctionFragment;
     "vm()": FunctionFragment;
@@ -130,7 +130,7 @@ export interface WormholeSimulatorInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "fetchSignedMessageFromLogs",
-    values: [VmSafe.LogStruct, BigNumberish, string]
+    values: [VmSafe.LogStruct, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "fetchWormholeMessageFromLog",
@@ -202,8 +202,8 @@ export interface WormholeSimulator extends BaseContract {
   functions: {
     encodeAndSignMessage(
       vm_: IWormhole.VMStruct,
-      overrides?: Overrides & { from?: string }
-    ): Promise<ContractTransaction>;
+      overrides?: CallOverrides
+    ): Promise<[string] & { signedMessage: string }>;
 
     encodeObservation(
       vm_: IWormhole.VMStruct,
@@ -215,15 +215,14 @@ export interface WormholeSimulator extends BaseContract {
       nonce: BigNumberish,
       emitterChainId: BigNumberish,
       emitterAddress: string,
-      overrides?: Overrides & { from?: string }
-    ): Promise<ContractTransaction>;
+      overrides?: CallOverrides
+    ): Promise<[string] & { signedMessage: string }>;
 
     fetchSignedMessageFromLogs(
       log: VmSafe.LogStruct,
       emitterChainId: BigNumberish,
-      emitterAddress: string,
-      overrides?: Overrides & { from?: string }
-    ): Promise<ContractTransaction>;
+      overrides?: CallOverrides
+    ): Promise<[string] & { signedMessage: string }>;
 
     fetchWormholeMessageFromLog(
       logs: VmSafe.LogStruct[],
@@ -243,8 +242,8 @@ export interface WormholeSimulator extends BaseContract {
 
   encodeAndSignMessage(
     vm_: IWormhole.VMStruct,
-    overrides?: Overrides & { from?: string }
-  ): Promise<ContractTransaction>;
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   encodeObservation(
     vm_: IWormhole.VMStruct,
@@ -256,15 +255,14 @@ export interface WormholeSimulator extends BaseContract {
     nonce: BigNumberish,
     emitterChainId: BigNumberish,
     emitterAddress: string,
-    overrides?: Overrides & { from?: string }
-  ): Promise<ContractTransaction>;
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   fetchSignedMessageFromLogs(
     log: VmSafe.LogStruct,
     emitterChainId: BigNumberish,
-    emitterAddress: string,
-    overrides?: Overrides & { from?: string }
-  ): Promise<ContractTransaction>;
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   fetchWormholeMessageFromLog(
     logs: VmSafe.LogStruct[],
@@ -303,7 +301,6 @@ export interface WormholeSimulator extends BaseContract {
     fetchSignedMessageFromLogs(
       log: VmSafe.LogStruct,
       emitterChainId: BigNumberish,
-      emitterAddress: string,
       overrides?: CallOverrides
     ): Promise<string>;
 
@@ -328,7 +325,7 @@ export interface WormholeSimulator extends BaseContract {
   estimateGas: {
     encodeAndSignMessage(
       vm_: IWormhole.VMStruct,
-      overrides?: Overrides & { from?: string }
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     encodeObservation(
@@ -341,14 +338,13 @@ export interface WormholeSimulator extends BaseContract {
       nonce: BigNumberish,
       emitterChainId: BigNumberish,
       emitterAddress: string,
-      overrides?: Overrides & { from?: string }
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     fetchSignedMessageFromLogs(
       log: VmSafe.LogStruct,
       emitterChainId: BigNumberish,
-      emitterAddress: string,
-      overrides?: Overrides & { from?: string }
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     fetchWormholeMessageFromLog(
@@ -370,7 +366,7 @@ export interface WormholeSimulator extends BaseContract {
   populateTransaction: {
     encodeAndSignMessage(
       vm_: IWormhole.VMStruct,
-      overrides?: Overrides & { from?: string }
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     encodeObservation(
@@ -383,14 +379,13 @@ export interface WormholeSimulator extends BaseContract {
       nonce: BigNumberish,
       emitterChainId: BigNumberish,
       emitterAddress: string,
-      overrides?: Overrides & { from?: string }
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     fetchSignedMessageFromLogs(
       log: VmSafe.LogStruct,
       emitterChainId: BigNumberish,
-      emitterAddress: string,
-      overrides?: Overrides & { from?: string }
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     fetchWormholeMessageFromLog(

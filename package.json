@@ -7,7 +7,8 @@
   "license": "MIT",
   "scripts": {
     "main": "ts-node ./ts-scripts/main.ts",
-    "deploy": "ts-node ./ts-scripts/deploy.ts",
+    "deploy": "ts-node ./ts-scripts/main.ts deploy",
+    "build": "forge build; forge remappings > remappings.txt; yarn typechain",
     "typechain": "typechain --target ethers-v5 --out-dir ./ts-scripts/ethers-contracts ./out/**/*.json"
   },
   "dependencies": {
