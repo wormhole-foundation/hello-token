@@ -1,14 +1,12 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import "../lib/WormholeRelayerSDK.sol";
+import "wormhole-relayer-sdk/WormholeRelayerSDK.sol";
 
-import "./interfaces/IWormholeRelayer.sol";
-import "./interfaces/IWormholeReceiver.sol";
-import "./interfaces/ITokenBridge.sol";
-import "./interfaces/IWormhole.sol";
-
-import "openzeppelin/token/ERC20/IERC20.sol";
+import "wormhole-relayer-sdk/interfaces/IWormholeRelayer.sol";
+import "wormhole-relayer-sdk/interfaces/IWormholeReceiver.sol";
+import "wormhole-relayer-sdk/interfaces/ITokenBridge.sol";
+import "wormhole-relayer-sdk/interfaces/IWormhole.sol";
 
 import "forge-std/console.sol";
 
@@ -20,7 +18,7 @@ struct LiquidityProvided {
     uint256 amount;
 }
 
-contract HelloTokensWithHelpers is VaaSenderBase, IWormholeReceiver {
+contract HelloTokens is TokenSender, IWormholeReceiver {
     uint256 constant GAS_LIMIT = 350_000;
 
     LiquidityProvided[] public liquidityProvidedHistory;
@@ -29,7 +27,7 @@ contract HelloTokensWithHelpers is VaaSenderBase, IWormholeReceiver {
         address _wormholeRelayer,
         address _tokenBridge,
         address _wormhole
-    ) VaaSenderBase(_wormholeRelayer, _tokenBridge, _wormhole) {}
+    ) TokenSender(_wormholeRelayer, _tokenBridge, _wormhole) {}
 
     function quoteRemoteLP(
         uint16 targetChain

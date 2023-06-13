@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import "./interfaces/IWormholeRelayer.sol";
-import "./interfaces/IWormholeReceiver.sol";
-import "./interfaces/ITokenBridge.sol";
-import "./interfaces/IWormhole.sol";
-import "openzeppelin/token/ERC20/IERC20.sol";
+import "wormhole-relayer-sdk/interfaces/IWormholeRelayer.sol";
+import "wormhole-relayer-sdk/interfaces/IWormholeReceiver.sol";
+import "wormhole-relayer-sdk/interfaces/ITokenBridge.sol";
+import "wormhole-relayer-sdk/interfaces/IWormhole.sol";
+import "wormhole-relayer-sdk/interfaces/IERC20.sol";
 
 import "forge-std/console.sol";
 
