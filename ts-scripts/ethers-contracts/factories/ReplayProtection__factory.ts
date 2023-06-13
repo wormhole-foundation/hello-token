@@ -7,7 +7,7 @@ import type { Provider } from "@ethersproject/providers";
 import type {
   ReplayProtection,
   ReplayProtectionInterface,
-} from "../../WormholeRelayerSDK.sol/ReplayProtection";
+} from "../ReplayProtection";
 
 const _abi = [
   {

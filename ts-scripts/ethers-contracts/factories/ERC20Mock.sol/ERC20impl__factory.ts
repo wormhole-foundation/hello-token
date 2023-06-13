@@ -5,9 +5,9 @@
 import { Contract, Signer, utils } from "ethers";
 import type { Provider } from "@ethersproject/providers";
 import type {
-  IERC20Metadata,
-  IERC20MetadataInterface,
-} from "../IERC20Metadata";
+  ERC20impl,
+  ERC20implInterface,
+} from "../../ERC20Mock.sol/ERC20impl";
 
 const _abi = [
   {
@@ -61,15 +61,28 @@ const _abi = [
     type: "event",
   },
   {
+    inputs: [],
+    name: "DOMAIN_SEPARATOR",
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "address",
-        name: "owner",
+        name: "",
         type: "address",
       },
       {
         internalType: "address",
-        name: "spender",
+        name: "",
         type: "address",
       },
     ],
@@ -112,7 +125,7 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "account",
+        name: "",
         type: "address",
       },
     ],
@@ -151,6 +164,68 @@ const _abi = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    name: "nonces",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "owner",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "spender",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "value",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "deadline",
+        type: "uint256",
+      },
+      {
+        internalType: "uint8",
+        name: "v",
+        type: "uint8",
+      },
+      {
+        internalType: "bytes32",
+        name: "r",
+        type: "bytes32",
+      },
+      {
+        internalType: "bytes32",
+        name: "s",
+        type: "bytes32",
+      },
+    ],
+    name: "permit",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -234,15 +309,15 @@ const _abi = [
   },
 ] as const;
 
-export class IERC20Metadata__factory {
+export class ERC20impl__factory {
   static readonly abi = _abi;
-  static createInterface(): IERC20MetadataInterface {
-    return new utils.Interface(_abi) as IERC20MetadataInterface;
+  static createInterface(): ERC20implInterface {
+    return new utils.Interface(_abi) as ERC20implInterface;
   }
   static connect(
     address: string,
     signerOrProvider: Signer | Provider
-  ): IERC20Metadata {
-    return new Contract(address, _abi, signerOrProvider) as IERC20Metadata;
+  ): ERC20impl {
+    return new Contract(address, _abi, signerOrProvider) as ERC20impl;
   }
 }

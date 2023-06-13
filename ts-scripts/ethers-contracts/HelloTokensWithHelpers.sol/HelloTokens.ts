@@ -20,7 +20,7 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
-} from "./common";
+} from "../common";
 
 export type LiquidityProvidedStruct = {
   senderChain: BigNumberish;
@@ -44,7 +44,7 @@ export type LiquidityProvidedStructOutput = [
   amount: BigNumber;
 };
 
-export interface HelloTokensWithHelpersInterface extends utils.Interface {
+export interface HelloTokensInterface extends utils.Interface {
   functions: {
     "getLiquiditiesProvidedHistory()": FunctionFragment;
     "liquidityProvidedHistory(uint256)": FunctionFragment;
@@ -131,12 +131,12 @@ export interface HelloTokensWithHelpersInterface extends utils.Interface {
   events: {};
 }
 
-export interface HelloTokensWithHelpers extends BaseContract {
+export interface HelloTokens extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: HelloTokensWithHelpersInterface;
+  interface: HelloTokensInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,

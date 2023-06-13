@@ -7,7 +7,7 @@ import type { Provider } from "@ethersproject/providers";
 import type {
   WormholeRelayerTest,
   WormholeRelayerTestInterface,
-} from "../../WormholeRelayerForkTestingBase.sol/WormholeRelayerTest";
+} from "../WormholeRelayerTest";
 
 const _abi = [
   {

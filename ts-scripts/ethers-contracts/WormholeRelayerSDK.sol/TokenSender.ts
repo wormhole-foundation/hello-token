@@ -19,7 +19,7 @@ import type {
   OnEvent,
 } from "../common";
 
-export interface VaaSenderBaseInterface extends utils.Interface {
+export interface TokenSenderInterface extends utils.Interface {
   functions: {
     "tokenBridge()": FunctionFragment;
     "wormhole()": FunctionFragment;
@@ -53,12 +53,12 @@ export interface VaaSenderBaseInterface extends utils.Interface {
   events: {};
 }
 
-export interface VaaSenderBase extends BaseContract {
+export interface TokenSender extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: VaaSenderBaseInterface;
+  interface: TokenSenderInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,

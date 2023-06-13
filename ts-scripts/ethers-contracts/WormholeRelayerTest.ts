@@ -24,7 +24,7 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
-} from "../common";
+} from "./common";
 
 export declare namespace StdInvariant {
   export type FuzzSelectorStruct = { addr: string; selectors: BytesLike[] };
