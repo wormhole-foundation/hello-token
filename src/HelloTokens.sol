@@ -105,6 +105,12 @@ contract HelloTokens is IWormholeReceiver {
         uint16 sourceChain,
         bytes32 // deliveryHash
     ) public payable override {
+        require(msg.sender == address(wormholeRelayer), "Only wormhole allowed");
+        require(
+            additionalVaas.length == 2,
+            "Expected 2 additional VAA keys for token transfers"
+        );
+
         address lpProvider = abi.decode(payload, (address));
 
         IWormhole.VM memory parsedVMA = wormhole.parseVM(additionalVaas[0]);
