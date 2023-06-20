@@ -11,7 +11,7 @@ struct Deposit {
 }
 
 contract HelloToken is TokenSender, TokenReceiver {
-    uint256 constant GAS_LIMIT = 350_000;
+    uint256 constant GAS_LIMIT = 250_000;
 
     Deposit public lastDeposit;
 
