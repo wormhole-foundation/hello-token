@@ -37,26 +37,21 @@ contract HelloTokensTest is WormholeRelayerTest {
         );
     }
 
-    function testGreeting() public {
+    function testRemoteLP() public {
         uint256 amount = 19e17;
         tokenA.approve(address(helloSource), amount);
         tokenB.approve(address(helloSource), amount);
 
-        uint cost = helloSource.quoteRemoteLP(targetChain);
+        uint256 cost = helloSource.quoteRemoteLP(targetChain);
 
         vm.recordLogs();
         helloSource.sendRemoteLP{value: cost}(
-            targetChain,
-            address(helloTarget),
-            amount,
-            address(tokenA),
-            address(tokenB)
+            targetChain, address(helloTarget), amount, address(tokenA), address(tokenB)
         );
-        performDelivery(3);
+        performDelivery();
 
         vm.selectFork(targetFork);
-        LiquidityProvided[] memory lp = helloTarget
-            .getLiquiditiesProvidedHistory();
+        LiquidityProvided[] memory lp = helloTarget.getLiquiditiesProvidedHistory();
         assertEq(lp.length, 1, "lp.length");
         assertEq(lp[0].senderChain, sourceChain, "senderChain");
         assertEq(lp[0].sender, address(this), "sender");
