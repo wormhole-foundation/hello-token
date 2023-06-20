@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import "wormhole-relayer-sdk/interfaces/IWormholeRelayer.sol";
-import "wormhole-relayer-sdk/interfaces/IWormholeReceiver.sol";
-import "wormhole-relayer-sdk/interfaces/ITokenBridge.sol";
-import "wormhole-relayer-sdk/interfaces/IWormhole.sol";
-import "wormhole-relayer-sdk/interfaces/IERC20.sol";
+import "wormhole-relayer-solidity-sdk/interfaces/IWormholeRelayer.sol";
+import "wormhole-relayer-solidity-sdk/interfaces/IWormholeReceiver.sol";
+import "wormhole-relayer-solidity-sdk/interfaces/ITokenBridge.sol";
+import "wormhole-relayer-solidity-sdk/interfaces/IWormhole.sol";
+import "wormhole-relayer-solidity-sdk/interfaces/IERC20.sol";
 
 struct LiquidityProvided {
     uint16 senderChain;

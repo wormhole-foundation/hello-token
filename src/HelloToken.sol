@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import "wormhole-relayer-sdk/WormholeRelayerSDK.sol";
+import "wormhole-relayer-solidity-sdk/WormholeRelayerSDK.sol";
 
 struct Deposit {
     uint16 senderChain;
