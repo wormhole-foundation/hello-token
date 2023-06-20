@@ -51,12 +51,12 @@ contract HelloTokensTest is WormholeRelayerTest {
         performDelivery();
 
         vm.selectFork(targetFork);
-        LiquidityProvided[] memory lp = helloTarget.getLiquiditiesProvidedHistory();
-        assertEq(lp.length, 1, "lp.length");
-        assertEq(lp[0].senderChain, sourceChain, "senderChain");
-        assertEq(lp[0].sender, address(this), "sender");
-        assertEq(lp[0].tokenA, address(tokenA), "tokenA");
-        assertEq(lp[0].tokenB, address(tokenB), "tokenB");
-        assertEq(lp[0].amount, amount, "amount");
+        (uint16 senderChain, address sender, address lpTokenA, address lpTokenB, uint256 lpAmt) =
+            helloTarget.lastLiquidityProvided();
+        assertEq(senderChain, sourceChain, "senderChain");
+        assertEq(sender, address(this), "sender");
+        assertEq(lpTokenA, address(tokenA), "tokenA");
+        assertEq(lpTokenB, address(tokenB), "tokenB");
+        assertEq(lpAmt, amount, "amount");
     }
 }

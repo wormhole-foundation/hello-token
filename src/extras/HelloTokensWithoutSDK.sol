@@ -22,7 +22,7 @@ contract HelloTokens is IWormholeReceiver {
     ITokenBridge public immutable tokenBridge;
     IWormhole public immutable wormhole;
 
-    LiquidityProvided[] public liquidityProvidedHistory;
+    LiquidityProvided public lastLiquidityProvided;
 
     constructor(address _wormholeRelayer, address _tokenBridge, address _wormhole) {
         wormholeRelayer = IWormholeRelayer(_wormholeRelayer);
@@ -34,10 +34,13 @@ contract HelloTokens is IWormholeReceiver {
         (cost,) = wormholeRelayer.quoteEVMDeliveryPrice(targetChain, 0, GAS_LIMIT);
     }
 
-    function sendRemoteLP(uint16 targetChain, address targetAddress, uint256 amount, address tokenA, address tokenB)
-        public
-        payable
-    {
+    function sendRemoteLP(
+        uint16 targetChain,
+        address targetAddress,
+        uint256 amount,
+        address tokenA,
+        address tokenB
+    ) public payable {
         // emit token transfers
         IERC20(tokenA).transferFrom(msg.sender, address(this), amount);
         IERC20(tokenA).approve(address(tokenBridge), amount);
@@ -65,6 +68,7 @@ contract HelloTokens is IWormholeReceiver {
         });
 
         uint256 cost = quoteRemoteLP(targetChain);
+        require(msg.value >= cost, "Insufficient payment to cover delivery cost");
 
         // encode payload
         bytes memory lpProvider = abi.encode(msg.sender);
@@ -77,10 +81,6 @@ contract HelloTokens is IWormholeReceiver {
             GAS_LIMIT,
             additionalVaas
         );
-        if (msg.value > cost) {
-            (bool success,) = msg.sender.call{value: msg.value - cost}("");
-            require(success, "Returning excess funds failed");
-        }
     }
 
     function receiveWormholeMessages(
@@ -113,19 +113,13 @@ contract HelloTokens is IWormholeReceiver {
         ITokenBridge.Transfer memory transferA,
         ITokenBridge.Transfer memory transferB
     ) internal {
-        liquidityProvidedHistory.push(
-            LiquidityProvided(
-                sourceChain,
-                lpProvider,
-                fromWormholeFormat(transferA.tokenAddress),
-                fromWormholeFormat(transferB.tokenAddress),
-                transferA.amount * 1e10 // Note: token bridge normalizes values to 8 decimals for cross-ecosystem compatibility
-            )
+        lastLiquidityProvided = LiquidityProvided(
+            sourceChain,
+            lpProvider,
+            fromWormholeFormat(transferA.tokenAddress),
+            fromWormholeFormat(transferB.tokenAddress),
+            transferA.amount * 1e10 // Note: token bridge normalizes values to 8 decimals for cross-ecosystem compatibility
         );
-    }
-
-    function getLiquiditiesProvidedHistory() public view returns (LiquidityProvided[] memory) {
-        return liquidityProvidedHistory;
     }
 }
 

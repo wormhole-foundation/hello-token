@@ -39,11 +39,14 @@ contract HelloTokenTest is WormholeRelayerTest {
         uint256 cost = helloSource.quoteRemoteDeposit(targetChain);
 
         vm.recordLogs();
-        helloSource.sendRemoteDeposit{value: cost}(targetChain, address(helloTarget), amount, address(token));
+        helloSource.sendRemoteDeposit{value: cost}(
+            targetChain, address(helloTarget), amount, address(token)
+        );
         performDelivery();
 
         vm.selectFork(targetFork);
-        (uint16 senderChain, address sender, address depositToken, uint256 depositAmt) = helloTarget.lastDeposit();
+        (uint16 senderChain, address sender, address depositToken, uint256 depositAmt) =
+            helloTarget.lastDeposit();
         assertEq(senderChain, sourceChain, "senderChain");
         assertEq(sender, address(this), "sender");
         assertEq(depositToken, address(token), "tokenB");
