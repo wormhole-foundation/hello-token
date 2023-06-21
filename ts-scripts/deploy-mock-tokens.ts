@@ -19,7 +19,7 @@ import {
 import * as grpcWebNodeHttpTransport from "@improbable-eng/grpc-web-node-http-transport"
 import { ChainInfo, getArg } from "./utils"
 
-export async function deployMockTokens() {
+export async function deployMockToken() {
   const deployed = loadDeployedAddresses()
   const from = getChain(6)
 
@@ -27,15 +27,11 @@ export async function deployMockTokens() {
   const HT = await new ERC20Mock__factory(signer).deploy("HelloToken", "HT")
   await HT.deployed()
   console.log(`HT deployed to ${HT.address} on chain ${from.chainId}}`)
-  const GbT = await new ERC20Mock__factory(signer).deploy("GoodbyeToken", "GbT")
-  await GbT.deployed()
-  console.log(`GbT deployed to ${GbT.address} on chain ${from.chainId}}`)
-  deployed.erc20s[6] = [HT.address, GbT.address]
+  deployed.erc20s[6] = [HT.address]
 
   console.log("Minting...")
   await HT.mint(signer.address, ethers.utils.parseEther("10")).then(wait)
-  await GbT.mint(signer.address, ethers.utils.parseEther("10")).then(wait)
-  console.log("Minted 10 HT and GbT to signer")
+  console.log("Minted 10 HT to signer")
 
   console.log(
     `Attesting tokens with token bridge on chain(s) ${loadConfig()
@@ -48,7 +44,6 @@ export async function deployMockTokens() {
       continue
     }
     await attestWorkflow({ from: getChain(6), to: chain, token: HT.address })
-    await attestWorkflow({ from: getChain(6), to: chain, token: GbT.address })
   }
 
   storeDeployedAddresses(deployed)
@@ -68,6 +63,7 @@ async function attestWorkflow({
     getWallet(from.chainId),
     token
   )
+  console.log(attestRx);
   const seq = parseSequenceFromLogEth(attestRx, from.tokenBridge)
 
   const res = await getSignedVAAWithRetry(

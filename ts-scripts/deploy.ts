@@ -27,7 +27,7 @@ export async function deploy() {
 
     deployed.helloTokens[chainId] = helloTokens.address
     console.log(
-      `HelloTokens deployed to ${helloTokens.address} on chain ${chainId}`
+      `HelloToken deployed to ${helloTokens.address} on chain ${chainId}`
     )
   }
 

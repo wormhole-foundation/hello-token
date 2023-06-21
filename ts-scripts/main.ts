@@ -7,26 +7,24 @@ import {
 } from "./utils"
 import { ERC20Mock__factory, HelloTokens__factory } from "./ethers-contracts"
 import { deploy } from "./deploy"
-import { deployMockTokens } from "./deploy-mock-tokens"
+import { deployMockToken } from "./deploy-mock-tokens"
 
 async function main() {
-  if (checkFlag("--sendRemoteLP")) {
-    await sendRemoteLP()
+  if (checkFlag("--sendRemoteDeposit")) {
+    await sendRemoteDeposit()
     return
   }
   if (checkFlag("--deployHelloTokens")) {
     await deploy()
     return
   }
-  if (checkFlag("--deployMockTokens")) {
-    await deployMockTokens()
+  if (checkFlag("--deployMockToken")) {
+    await deployMockToken()
     return
   }
-
-  // await read();
 }
 
-async function sendRemoteLP() {
+async function sendRemoteDeposit() {
   // const from = Number(getArg(["--from", "-f"]))
   // const to = Number(getArg(["--to", "-t"]))
   // const amount = getArg(["--amount", "-a"])
@@ -35,44 +33,29 @@ async function sendRemoteLP() {
   const to = 14
   const amount = ethers.utils.parseEther("10")
 
-  const helloToken = getHelloToken(from)
-  const cost = await helloToken.quoteRemoteLP(to)
+  const helloToken = getHelloTokens(from)
+  const cost = await helloToken.quoteRemoteDeposit(to)
   console.log(`cost: ${ethers.utils.formatEther(cost)}`)
 
-  const [HT, GbT] = getDeployedAddresses().erc20s[from].map(erc20 =>
-    ERC20Mock__factory.connect(erc20, getWallet(from))
-  )
+  const HT = ERC20Mock__factory.connect(getDeployedAddresses().erc20s[from][0], getWallet(from));
 
   const rx = await helloToken
-    .sendRemoteLP(
+    .sendRemoteDeposit(
       to,
-      getHelloToken(to).address,
+      getHelloTokens(to).address,
       amount,
-      HT.address,
-      GbT.address
+      HT.address
     )
     .then(wait)
 }
 
-function getHelloToken(chainId: number) {
+function getHelloTokens(chainId: number) {
   const deployed = getDeployedAddresses().helloTokens[chainId]
   if (!deployed) {
     throw new Error(`No deployed hello token on chain ${chainId}`)
   }
   return HelloTokens__factory.connect(deployed, getWallet(chainId))
 }
-
-// async function read(s = "State: ") {
-//   for (const deployed of getDeployedAddresses().counter) {
-//     const counter = Counter__factory.connect(
-//       deployed.address,
-//       getWallet(deployed.chainId)
-//     )
-//     const number = await counter.getNumber()
-//     s += `chain ${deployed.chainId}: ${number} `
-//   }
-//   console.log(s)
-// }
 
 main().catch(e => {
   console.error(e)

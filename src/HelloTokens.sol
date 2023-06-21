@@ -10,7 +10,7 @@ struct Deposit {
     uint256 amount;
 }
 
-contract HelloToken is TokenSender, TokenReceiver {
+contract HelloTokens is TokenSender, TokenReceiver {
     uint256 constant GAS_LIMIT = 250_000;
 
     Deposit public lastDeposit;
@@ -30,7 +30,7 @@ contract HelloToken is TokenSender, TokenReceiver {
         address token
     ) public payable {
         uint256 cost = quoteRemoteDeposit(targetChain);
-        require(msg.value >= cost, "msg.value must equal quoteRemoteLP(targetChain)");
+        require(msg.value >= cost, "msg.value must be at least quoteRemoteDeposit(targetChain)");
 
         IERC20(token).transferFrom(msg.sender, address(this), amount);
 

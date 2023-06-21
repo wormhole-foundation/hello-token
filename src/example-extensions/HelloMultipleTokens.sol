@@ -11,7 +11,7 @@ struct LiquidityProvided {
     uint256 amount;
 }
 
-contract HelloTokens is TokenSender, TokenReceiver {
+contract HelloMultipleTokens is TokenSender, TokenReceiver {
     uint256 constant GAS_LIMIT = 400_000;
 
     LiquidityProvided public lastLiquidityProvided;
