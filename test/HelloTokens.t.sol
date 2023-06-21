@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import {HelloTokens, LiquidityProvided} from "../src/HelloTokens.sol";
+import {HelloTokens, LiquidityProvided} from "../src/example-extensions/HelloTokens.sol";
 
 import "wormhole-relayer-solidity-sdk/testing/WormholeRelayerTest.sol";
 
