@@ -26,7 +26,7 @@ export async function deployMockToken() {
   const signer = getWallet(from.chainId)
   const HT = await new ERC20Mock__factory(signer).deploy("HelloToken", "HT")
   await HT.deployed()
-  console.log(`HT deployed to ${HT.address} on chain ${from.chainId}}`)
+  console.log(`HT deployed to ${HT.address} on chain ${from.chainId}`)
   deployed.erc20s[6] = [HT.address]
 
   console.log("Minting...")
@@ -63,8 +63,7 @@ async function attestWorkflow({
     getWallet(from.chainId),
     token
   )
-  console.log(attestRx);
-  const seq = parseSequenceFromLogEth(attestRx, from.tokenBridge)
+  const seq = parseSequenceFromLogEth(attestRx, from.wormhole)
 
   const res = await getSignedVAAWithRetry(
     ["https://api.testnet.wormscan.io"],

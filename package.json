@@ -7,9 +7,9 @@
   "license": "MIT",
   "scripts": {
     "main": "ts-node ./ts-scripts/main.ts",
-    "deploy": "npm run build; npm run deployMockToken; npm run deployHelloToken",
+    "deploy": "npm run build; npm run deployMockToken; npm run deployHelloTokens",
     "deployMockToken": "ts-node ./ts-scripts/main.ts --deployMockToken",
-    "deployHelloToken": "ts-node ./ts-scripts/main.ts --deployHelloToken", 
+    "deployHelloTokens": "ts-node ./ts-scripts/main.ts --deployHelloTokens", 
     "build": "forge build; forge remappings > remappings.txt; npm run typechain",
     "typechain": "typechain --target ethers-v5 --out-dir ./ts-scripts/ethers-contracts ./out/**/*.json"
   },
