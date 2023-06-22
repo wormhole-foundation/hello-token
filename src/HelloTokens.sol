@@ -40,8 +40,7 @@ contract HelloTokens is TokenSender, TokenReceiver {
         );
     }
 
-    function receivePayloadAndTokens(
-        bytes memory payload,
+    function receiveTokensWithPayloads(
         ITokenBridge.TransferWithPayload[] memory transfers,
         bytes32, // sourceAddress
         uint16 sourceChain,
@@ -49,7 +48,7 @@ contract HelloTokens is TokenSender, TokenReceiver {
     ) internal override onlyWormholeRelayer {
         require(transfers.length == 1, "Expected 1 token transfers");
 
-        address depositor = abi.decode(payload, (address));
+        address depositor = abi.decode(transfers[0].payload, (address));
 
         // do something with the tokens
         lastDeposit = Deposit(

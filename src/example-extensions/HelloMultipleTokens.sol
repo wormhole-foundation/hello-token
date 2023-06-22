@@ -35,16 +35,17 @@ contract HelloMultipleTokens is TokenSender, TokenReceiver {
         IERC20(tokenA).transferFrom(msg.sender, address(this), amount);
         IERC20(tokenB).transferFrom(msg.sender, address(this), amount);
 
+        // encode payload to go with both token transfers
+        bytes memory lpProvider = abi.encode(msg.sender);
+
         // add transfers to additionalVaas list so they will be delivered along with the payload
         VaaKey[] memory vaaKeys = new VaaKey[](2);
-        vaaKeys[0] = transferTokens(tokenA, amount, targetChain, targetAddress);
-        vaaKeys[1] = transferTokens(tokenB, amount, targetChain, targetAddress);
+        vaaKeys[0] = transferTokens(tokenA, amount, targetChain, targetAddress, lpProvider);
+        vaaKeys[1] = transferTokens(tokenB, amount, targetChain, targetAddress, lpProvider);
 
         uint256 cost = quoteRemoteLP(targetChain);
         require(msg.value >= cost, "msg.value must be >= quoteRemoteLP(targetChain)");
 
-        // encode payload and send
-        bytes memory lpProvider = abi.encode(msg.sender);
         wormholeRelayer.sendVaasToEvm{value: cost}(
             targetChain,
             targetAddress,
@@ -55,8 +56,7 @@ contract HelloMultipleTokens is TokenSender, TokenReceiver {
         );
     }
 
-    function receivePayloadAndTokens(
-        bytes memory payload,
+    function receiveTokensWithPayloads(
         ITokenBridge.TransferWithPayload[] memory transfers,
         bytes32, // sourceAddress
         uint16 sourceChain,
@@ -64,9 +64,11 @@ contract HelloMultipleTokens is TokenSender, TokenReceiver {
     ) internal override onlyWormholeRelayer {
         require(transfers.length == 2, "Expected 2 token transfers");
         require(transfers[0].amount == transfers[1].amount, "Expected equal token amounts");
-
+        require(transfers[0].amount == transfers[1].amount, "Expected equal token amounts");
         // decode payload
-        address lpProvider = abi.decode(payload, (address));
+        address lpProvider = abi.decode(transfers[0].payload, (address));
+        address lpProviderB = abi.decode(transfers[1].payload, (address));
+        require(lpProvider == lpProviderB, "Expected same lp provider");
 
         // do something with the tokens
         lastLiquidityProvided = LiquidityProvided(
