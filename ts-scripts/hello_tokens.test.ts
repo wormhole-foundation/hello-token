@@ -8,11 +8,15 @@ import {
     wait
 } from "./utils"
 import {
+    getStatus
+} from "./getStatus"
+import {
     ERC20Mock__factory,
     ITokenBridge__factory
 } from "./ethers-contracts"
 import {
     tryNativeToUint8Array,
+    CHAIN_ID_TO_NAME
 } from "@certusone/wormhole-sdk"
 
 const sourceChain = 6;
@@ -20,7 +24,9 @@ const targetChain = 14;
 
 describe("Hello Tokens Integration Tests on Testnet", () => {
     test("Tests the sending of a token", async () => {
-        const arbitraryTokenAmount = ethers.BigNumber.from((new Date().getTime()) % (10 ** 11)).mul(10**6);
+        // Token Bridge can only deal with 8 decimal places
+        // So we send a multiple of 10^10, since this MockToken has 18 decimal places
+        const arbitraryTokenAmount = ethers.BigNumber.from((new Date().getTime()) % (10 ** 7)).mul(10**10);
 
         const HTtoken = ERC20Mock__factory.connect(getDeployedAddresses().erc20s[sourceChain][0], getWallet(sourceChain));
 
@@ -47,7 +53,14 @@ describe("Hello Tokens Integration Tests on Testnet", () => {
         await tx.wait();
         console.log(`See transaction at: https://testnet.snowtrace.io/tx/${tx.hash}`);
 
-        await new Promise(resolve => setTimeout(resolve, 1000*5));
+        await new Promise(resolve => setTimeout(resolve, 1000*15));
+
+        /*
+        console.log("Checking relay status");
+        console.log(CHAIN_ID_TO_NAME[sourceChain]);
+        const res = await getStatus(CHAIN_ID_TO_NAME[sourceChain], tx.hash);
+        console.log(`Status: ${res.status}`);
+        console.log(`Info: ${res.info}`); */
 
         console.log(`Seeing if token was sent`);
         const targetHelloTokensContractCurrentBalanceOfHTToken = await wormholeWrappedHTTokenOnTargetChain.balanceOf(targetHelloTokensContract.address);
