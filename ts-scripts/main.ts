@@ -1,11 +1,12 @@
 import * as ethers from "ethers"
 import {
   checkFlag,
-  loadDeployedAddresses as getDeployedAddresses,
+  getHelloTokens,
   getWallet,
+  loadDeployedAddresses as getDeployedAddresses,
   wait,
 } from "./utils"
-import { ERC20Mock__factory, HelloTokens__factory } from "./ethers-contracts"
+import { ERC20Mock__factory, } from "./ethers-contracts"
 import { deploy } from "./deploy"
 import { deployMockToken } from "./deploy-mock-tokens"
 
@@ -47,14 +48,6 @@ async function sendRemoteDeposit() {
       HT.address
     )
     .then(wait)
-}
-
-function getHelloTokens(chainId: number) {
-  const deployed = getDeployedAddresses().helloTokens[chainId]
-  if (!deployed) {
-    throw new Error(`No deployed hello token on chain ${chainId}`)
-  }
-  return HelloTokens__factory.connect(deployed, getWallet(chainId))
 }
 
 main().catch(e => {

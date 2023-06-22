@@ -1,6 +1,8 @@
 import { ethers, Wallet } from "ethers"
 import { readFileSync, writeFileSync } from "fs"
 
+import { HelloTokens, HelloTokens__factory } from "./ethers-contracts"
+
 export interface ChainInfo {
   description: string
   chainId: number
@@ -16,6 +18,14 @@ export interface Config {
 export interface DeployedAddresses {
   helloTokens: Record<number, string>
   erc20s: Record<number, string[]>
+}
+
+export function getHelloTokens(chainId: number) {
+  const deployed = loadDeployedAddresses().helloTokens[chainId]
+  if (!deployed) {
+    throw new Error(`No deployed hello token on chain ${chainId}`)
+  }
+  return HelloTokens__factory.connect(deployed, getWallet(chainId))
 }
 
 export function getChain(chainId: number): ChainInfo {
