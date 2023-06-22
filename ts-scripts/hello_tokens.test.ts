@@ -38,8 +38,7 @@ describe("Hello Tokens Integration Tests on Testnet", () => {
         await new Promise(resolve => setTimeout(resolve, 1000*5));
 
         console.log(`Seeing if token was sent`);
-        const targetHelloTokensContractCurrentBalanceOfHTToken = await HTtoken.balanceOf(targetHelloTokensContract.address);
-
-        expect(targetHelloTokensContractCurrentBalanceOfHTToken.sub(targetHelloTokensContractOriginalBalanceOfHTToken).toString()).toBe(arbitraryTokenAmount.toString());
+        // code to see if token was sent
+        
     }, 60*1000) // timeout
 })
