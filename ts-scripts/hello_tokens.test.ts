@@ -3,11 +3,17 @@ import { ethers } from "ethers";
 import {
     getHelloTokens,
     loadDeployedAddresses as getDeployedAddresses,
-    getWallet
+    getWallet,
+    getChain,
+    wait
 } from "./utils"
 import {
-    ERC20Mock__factory
+    ERC20Mock__factory,
+    ITokenBridge__factory
 } from "./ethers-contracts"
+import {
+    tryNativeToUint8Array,
+} from "@certusone/wormhole-sdk"
 
 const sourceChain = 6;
 const targetChain = 14;
@@ -18,17 +24,23 @@ describe("Hello Tokens Integration Tests on Testnet", () => {
 
         const HTtoken = ERC20Mock__factory.connect(getDeployedAddresses().erc20s[sourceChain][0], getWallet(sourceChain));
 
+        const wormholeWrappedHTTokenAddressOnTargetChain = await ITokenBridge__factory.connect(getChain(targetChain).tokenBridge, getWallet(targetChain)).wrappedAsset(sourceChain, tryNativeToUint8Array(HTtoken.address, "ethereum"));
+        const wormholeWrappedHTTokenOnTargetChain = ERC20Mock__factory.connect(wormholeWrappedHTTokenAddressOnTargetChain, getWallet(targetChain));
+
         const sourceHelloTokensContract = getHelloTokens(sourceChain);
         const targetHelloTokensContract = getHelloTokens(targetChain);
 
-        const targetHelloTokensContractOriginalBalanceOfHTToken = await HTtoken.balanceOf(targetHelloTokensContract.address);
+        const targetHelloTokensContractOriginalBalanceOfHTToken = await wormholeWrappedHTTokenOnTargetChain.balanceOf(targetHelloTokensContract.address);
 
         const cost = await sourceHelloTokensContract.quoteRemoteDeposit(targetChain);
         console.log(`Cost of sending the tokens: ${ethers.utils.formatEther(cost)} testnet AVAX`);
 
-        console.log(`Sending ${ethers.utils.formatEther(arbitraryTokenAmount)} of the HT token`);
         // Approve the HelloTokens contract to use 'arbitraryTokenAmount' of our HT token
-        HTtoken.approve(sourceHelloTokensContract.address, arbitraryTokenAmount);
+        const approveTx = await HTtoken.approve(sourceHelloTokensContract.address, arbitraryTokenAmount).then(wait);
+        console.log(`HelloTokens contract approved to spend ${ethers.utils.formatEther(arbitraryTokenAmount)} of our HT token`)
+
+        console.log(`Sending ${ethers.utils.formatEther(arbitraryTokenAmount)} of the HT token`);
+
         const tx = await sourceHelloTokensContract.sendRemoteDeposit(targetChain, targetHelloTokensContract.address, arbitraryTokenAmount, HTtoken.address, {value: cost});
         
         console.log(`Transaction hash: ${tx.hash}`);
@@ -38,7 +50,8 @@ describe("Hello Tokens Integration Tests on Testnet", () => {
         await new Promise(resolve => setTimeout(resolve, 1000*5));
 
         console.log(`Seeing if token was sent`);
-        // code to see if token was sent
-        
+        const targetHelloTokensContractCurrentBalanceOfHTToken = await wormholeWrappedHTTokenOnTargetChain.balanceOf(targetHelloTokensContract.address);
+
+        expect(targetHelloTokensContractCurrentBalanceOfHTToken.sub(targetHelloTokensContractOriginalBalanceOfHTToken).toString()).toBe(arbitraryTokenAmount.toString());
     }, 60*1000) // timeout
 })
