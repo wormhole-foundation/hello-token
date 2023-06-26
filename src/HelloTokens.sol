@@ -40,22 +40,23 @@ contract HelloTokens is TokenSender, TokenReceiver {
         );
     }
 
-    function receiveTokensWithPayloads(
-        ITokenBridge.TransferWithPayload[] memory transfers,
+    function receivePayloadAndTokens(
+        bytes memory payload,
+        TokenReceived[] memory receivedTokens,
         bytes32, // sourceAddress
         uint16 sourceChain,
         bytes32 // deliveryHash
     ) internal override onlyWormholeRelayer {
-        require(transfers.length == 1, "Expected 1 token transfers");
+        require(receivedTokens.length == 1, "Expected 1 token transfers");
 
-        address depositor = abi.decode(transfers[0].payload, (address));
+        address depositor = abi.decode(payload, (address));
 
         // do something with the tokens
         lastDeposit = Deposit(
             sourceChain,
             depositor,
-            fromWormholeFormat(transfers[0].tokenAddress),
-            transfers[0].amount * 1e10 // Note: token bridge normalizes values to 8 decimals for cross-ecosystem compatibility
+            fromWormholeFormat(receivedTokens[0].tokenHomeAddress),
+            receivedTokens[0].amount
         );
     }
 }

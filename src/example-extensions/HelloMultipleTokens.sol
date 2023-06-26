@@ -56,28 +56,25 @@ contract HelloMultipleTokens is TokenSender, TokenReceiver {
         );
     }
 
-    function receiveTokensWithPayloads(
-        ITokenBridge.TransferWithPayload[] memory transfers,
+    function receivePayloadAndTokens(
+        bytes memory payload,
+        TokenReceived[] memory receivedTokens,
         bytes32, // sourceAddress
         uint16 sourceChain,
         bytes32 // deliveryHash
     ) internal override onlyWormholeRelayer {
-        require(transfers.length == 2, "Expected 2 token transfers");
-        require(transfers[0].amount == transfers[1].amount, "Expected equal token amounts");
-        require(transfers[0].amount == transfers[1].amount, "Expected equal token amounts");
+        require(receivedTokens.length == 2, "Expected 2 token transfers");
+        require(receivedTokens[0].amount == receivedTokens[1].amount, "Expected equal token amounts");
         // decode payload
-        address lpProvider = abi.decode(transfers[0].payload, (address));
-        address lpProviderB = abi.decode(transfers[1].payload, (address));
-        require(lpProvider == lpProviderB, "Expected same lp provider");
+        address lpProvider = abi.decode(payload, (address));
 
         // do something with the tokens
         lastLiquidityProvided = LiquidityProvided(
             sourceChain,
             lpProvider,
-            fromWormholeFormat(transfers[0].tokenAddress),
-            fromWormholeFormat(transfers[1].tokenAddress),
-            // Note: token bridge normalizes values to 8 decimals for cross-ecosystem compatibility
-            transfers[0].amount * 1e10
+            fromWormholeFormat(receivedTokens[0].tokenHomeAddress),
+            fromWormholeFormat(receivedTokens[1].tokenHomeAddress),
+            receivedTokens[0].amount
         );
     }
 }
