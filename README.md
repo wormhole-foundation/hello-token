@@ -26,7 +26,7 @@ forge test
 Expected output is
 
 ```bash
-Running 1 test for test/HelloTokens.t.sol:HelloTokensTest
+Running 1 test for test/HelloToken.t.sol:HelloTokenTest
 [PASS] testRemoteDeposit() (gas: 1338038)
 Test result: ok. 1 passed; 0 failed; finished in 5.64s
 ```
