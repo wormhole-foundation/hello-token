@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import {HelloToken, Deposit} from "../src/HelloToken.sol";
+import {HelloToken} from "../src/HelloToken.sol";
 
 import "wormhole-relayer-solidity-sdk/testing/WormholeRelayerTest.sol";
 
@@ -36,20 +36,20 @@ contract HelloTokenTest is WormholeRelayerTest {
         uint256 amount = 19e17;
         token.approve(address(helloSource), amount);
 
-        uint256 cost = helloSource.quoteRemoteDeposit(targetChain);
+        vm.selectFork(targetFork);
+        address recipient = 0x1234567890123456789012345678901234567890;
+
+        vm.selectFork(sourceFork);
+        uint256 cost = helloSource.quoteCrossChainDeposit(targetChain);
 
         vm.recordLogs();
-        helloSource.sendRemoteDeposit{value: cost}(
-            targetChain, address(helloTarget), amount, address(token)
+        helloSource.sendCrossChainDeposit{value: cost}(
+            targetChain, address(helloTarget), recipient, amount, address(token)
         );
         performDelivery();
 
         vm.selectFork(targetFork);
-        (uint16 senderChain, address sender, address depositToken, uint256 depositAmt) =
-            helloTarget.lastDeposit();
-        assertEq(senderChain, sourceChain, "senderChain");
-        assertEq(sender, address(this), "sender");
-        assertEq(depositToken, address(token), "tokenB");
-        assertEq(depositAmt, amount, "amount");
+        address wormholeWrappedToken = tokenBridgeTarget.wrappedAsset(sourceChain, toWormholeFormat(address(token)));
+        assertEq(IERC20(wormholeWrappedToken).balanceOf(recipient), amount);
     }
 }

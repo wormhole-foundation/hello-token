@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import {HelloMultipleTokens, LiquidityProvided} from "../src/example-extensions/HelloMultipleTokens.sol";
+import {HelloMultipleTokens} from "../src/example-extensions/HelloMultipleTokens.sol";
 
 import "wormhole-relayer-solidity-sdk/testing/WormholeRelayerTest.sol";
 
@@ -37,25 +37,30 @@ contract HelloMultipleTokensTest is WormholeRelayerTest {
     }
 
     function testRemoteLP() public {
-        uint256 amount = 19e17;
-        tokenA.approve(address(helloSource), amount);
-        tokenB.approve(address(helloSource), amount);
+        uint256 amountA = 19e17;
+        tokenA.approve(address(helloSource), amountA);
+        uint256 amountB = 13e17;
+        tokenB.approve(address(helloSource), amountB);
 
-        uint256 cost = helloSource.quoteRemoteLP(targetChain);
+        vm.selectFork(targetFork);
+        address recipient = 0x1234567890123456789012345678901234567890;
+
+        vm.selectFork(sourceFork);
+        uint256 cost = helloSource.quoteCrossChainDeposit(targetChain);
 
         vm.recordLogs();
-        helloSource.sendRemoteLP{value: cost}(
-            targetChain, address(helloTarget), amount, address(tokenA), address(tokenB)
+        helloSource.sendCrossChainDeposit{value: cost}(
+            targetChain, address(helloTarget), recipient, amountA, address(tokenA), amountB, address(tokenB)
         );
         performDelivery();
 
         vm.selectFork(targetFork);
-        (uint16 senderChain, address sender, address lpTokenA, address lpTokenB, uint256 lpAmt) =
-            helloTarget.lastLiquidityProvided();
-        assertEq(senderChain, sourceChain, "senderChain");
-        assertEq(sender, address(this), "sender");
-        assertEq(lpTokenA, address(tokenA), "tokenA");
-        assertEq(lpTokenB, address(tokenB), "tokenB");
-        assertEq(lpAmt, amount, "amount");
+
+        address wormholeWrappedTokenA = tokenBridgeTarget.wrappedAsset(sourceChain, toWormholeFormat(address(tokenA)));
+        assertEq(IERC20(wormholeWrappedTokenA).balanceOf(recipient), amountA);
+
+        address wormholeWrappedTokenB = tokenBridgeTarget.wrappedAsset(sourceChain, toWormholeFormat(address(tokenB)));
+        assertEq(IERC20(wormholeWrappedTokenB).balanceOf(recipient), amountB);
+
     }
 }
