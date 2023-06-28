@@ -1,21 +1,21 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import {HelloTokens, Deposit} from "../src/HelloTokens.sol";
+import {HelloToken, Deposit} from "../src/HelloToken.sol";
 
 import "wormhole-relayer-solidity-sdk/testing/WormholeRelayerTest.sol";
 
 import "forge-std/Test.sol";
 import "forge-std/console.sol";
 
-contract HelloTokensTest is WormholeRelayerTest {
-    HelloTokens public helloSource;
-    HelloTokens public helloTarget;
+contract HelloTokenTest is WormholeRelayerTest {
+    HelloToken public helloSource;
+    HelloToken public helloTarget;
 
     ERC20Mock public token;
 
     function setUpSource() public override {
-        helloSource = new HelloTokens(
+        helloSource = new HelloToken(
             address(relayerSource),
             address(tokenBridgeSource),
             address(wormholeSource)
@@ -25,7 +25,7 @@ contract HelloTokensTest is WormholeRelayerTest {
     }
 
     function setUpTarget() public override {
-        helloTarget = new HelloTokens(
+        helloTarget = new HelloToken(
             address(relayerTarget),
             address(tokenBridgeTarget),
             address(wormholeTarget)

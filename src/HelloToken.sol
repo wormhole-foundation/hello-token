@@ -10,7 +10,7 @@ struct Deposit {
     uint256 amount;
 }
 
-contract HelloTokens is TokenSender, TokenReceiver {
+contract HelloToken is TokenSender, TokenReceiver {
     uint256 constant GAS_LIMIT = 250_000;
 
     Deposit public lastDeposit;

@@ -1,7 +1,7 @@
 import * as ethers from "ethers"
 import {
   checkFlag,
-  getHelloTokens,
+  getHelloToken,
   getWallet,
   loadDeployedAddresses as getDeployedAddresses,
   wait,
@@ -15,7 +15,7 @@ async function main() {
     await sendRemoteDeposit()
     return
   }
-  if (checkFlag("--deployHelloTokens")) {
+  if (checkFlag("--deployHelloToken")) {
     await deploy()
     return
   }
@@ -34,7 +34,7 @@ async function sendRemoteDeposit() {
   const to = 14
   const amount = ethers.utils.parseEther("10")
 
-  const helloToken = getHelloTokens(from)
+  const helloToken = getHelloToken(from)
   const cost = await helloToken.quoteRemoteDeposit(to)
   console.log(`cost: ${ethers.utils.formatEther(cost)}`)
 
@@ -43,7 +43,7 @@ async function sendRemoteDeposit() {
   const rx = await helloToken
     .sendRemoteDeposit(
       to,
-      getHelloTokens(to).address,
+      getHelloToken(to).address,
       amount,
       HT.address
     )

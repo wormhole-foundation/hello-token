@@ -1,5 +1,5 @@
 {
-  "name": "hello-tokens",
+  "name": "hello-token",
   "version": "1.0.0",
   "main": "ts-scripts/main.ts",
   "repository": "git@github.com:JoeHowarth/hello-token.git",
@@ -7,9 +7,9 @@
   "license": "MIT",
   "scripts": {
     "main": "ts-node ./ts-scripts/main.ts",
-    "deploy": "npm run build; npm run deployMockToken; npm run deployHelloTokens",
+    "deploy": "npm run build; npm run deployMockToken; npm run deployHelloToken",
     "deployMockToken": "ts-node ./ts-scripts/main.ts --deployMockToken",
-    "deployHelloTokens": "ts-node ./ts-scripts/main.ts --deployHelloTokens",
+    "deployHelloToken": "ts-node ./ts-scripts/main.ts --deployHelloToken",
     "build": "npm install; forge build; forge remappings > remappings.txt; npm run typechain",
     "typechain": "typechain --target ethers-v5 --out-dir ./ts-scripts/ethers-contracts ./out/**/*.json",
     "test": "jest --config ./ts-scripts/jest.config.js"

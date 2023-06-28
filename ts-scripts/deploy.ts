@@ -1,5 +1,5 @@
 import { ethers } from "ethers"
-import { HelloTokens__factory, ERC20Mock__factory } from "./ethers-contracts"
+import { HelloToken__factory, ERC20Mock__factory } from "./ethers-contracts"
 import {
   loadConfig,
   getWallet,
@@ -18,16 +18,16 @@ export async function deploy() {
     const chain = getChain(chainId)
     const signer = getWallet(chainId)
 
-    const helloTokens = await new HelloTokens__factory(signer).deploy(
+    const helloToken = await new HelloToken__factory(signer).deploy(
       chain.wormholeRelayer,
       chain.tokenBridge!,
       chain.wormhole
     )
-    await helloTokens.deployed()
+    await helloToken.deployed()
 
-    deployed.helloTokens[chainId] = helloTokens.address
+    deployed.helloToken[chainId] = helloToken.address
     console.log(
-      `HelloToken deployed to ${helloTokens.address} on chain ${chainId}`
+      `HelloToken deployed to ${helloToken.address} on chain ${chainId}`
     )
   }
 
