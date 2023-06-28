@@ -33,12 +33,14 @@ describe("Hello Tokens Integration Tests on Testnet", () => {
         const wormholeWrappedHTTokenAddressOnTargetChain = await ITokenBridge__factory.connect(getChain(targetChain).tokenBridge, getWallet(targetChain)).wrappedAsset(sourceChain, tryNativeToUint8Array(HTtoken.address, "ethereum"));
         const wormholeWrappedHTTokenOnTargetChain = ERC20Mock__factory.connect(wormholeWrappedHTTokenAddressOnTargetChain, getWallet(targetChain));
 
+        const walletTargetChainAddress = getWallet(targetChain).address;
+
         const sourceHelloTokenContract = getHelloToken(sourceChain);
         const targetHelloTokenContract = getHelloToken(targetChain);
 
-        const targetHelloTokenContractOriginalBalanceOfHTToken = await wormholeWrappedHTTokenOnTargetChain.balanceOf(targetHelloTokenContract.address);
+        const walletOriginalBalanceOfWrappedHTToken = await wormholeWrappedHTTokenOnTargetChain.balanceOf(walletTargetChainAddress);
 
-        const cost = await sourceHelloTokenContract.quoteRemoteDeposit(targetChain);
+        const cost = await sourceHelloTokenContract.quoteCrossChainDeposit(targetChain);
         console.log(`Cost of sending the tokens: ${ethers.utils.formatEther(cost)} testnet AVAX`);
 
         // Approve the HelloToken contract to use 'arbitraryTokenAmount' of our HT token
@@ -47,7 +49,7 @@ describe("Hello Tokens Integration Tests on Testnet", () => {
 
         console.log(`Sending ${ethers.utils.formatEther(arbitraryTokenAmount)} of the HT token`);
 
-        const tx = await sourceHelloTokenContract.sendRemoteDeposit(targetChain, targetHelloTokenContract.address, arbitraryTokenAmount, HTtoken.address, {value: cost});
+        const tx = await sourceHelloTokenContract.sendCrossChainDeposit(targetChain, targetHelloTokenContract.address, walletTargetChainAddress, arbitraryTokenAmount, HTtoken.address, {value: cost});
         
         console.log(`Transaction hash: ${tx.hash}`);
         await tx.wait();
@@ -57,14 +59,13 @@ describe("Hello Tokens Integration Tests on Testnet", () => {
 
         /*
         console.log("Checking relay status");
-        console.log(CHAIN_ID_TO_NAME[sourceChain]);
         const res = await getStatus(CHAIN_ID_TO_NAME[sourceChain], tx.hash);
         console.log(`Status: ${res.status}`);
         console.log(`Info: ${res.info}`); */
 
         console.log(`Seeing if token was sent`);
-        const targetHelloTokenContractCurrentBalanceOfHTToken = await wormholeWrappedHTTokenOnTargetChain.balanceOf(targetHelloTokenContract.address);
+        const walletCurrentBalanceOfWrappedHTToken = await wormholeWrappedHTTokenOnTargetChain.balanceOf(walletTargetChainAddress);
 
-        expect(targetHelloTokenContractCurrentBalanceOfHTToken.sub(targetHelloTokenContractOriginalBalanceOfHTToken).toString()).toBe(arbitraryTokenAmount.toString());
+        expect(walletCurrentBalanceOfWrappedHTToken.sub(walletOriginalBalanceOfWrappedHTToken).toString()).toBe(arbitraryTokenAmount.toString());
     }, 60*1000) // timeout
 })
