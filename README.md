@@ -1,6 +1,6 @@
 # Building Your First Cross-Chain Token Sending and Receiving Application
 
-This repository contains a solidity contract (HelloTokens.sol) that can be deployed onto many EVM chains to form a fully functioning cross-chain application with the ability to send and receive tokens between blockchains.
+This repository contains a [solidity contract](./src/HelloToken.sol) that can be deployed onto many EVM chains to form a fully functioning cross-chain application with the ability to send and receive tokens between blockchains.
 
 ## Getting Started
 
