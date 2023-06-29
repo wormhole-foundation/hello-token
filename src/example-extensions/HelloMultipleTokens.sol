@@ -11,7 +11,9 @@ contract HelloMultipleTokens is TokenSender, TokenReceiver {
     {}
 
     function quoteCrossChainDeposit(uint16 targetChain) public view returns (uint256 cost) {
-        (cost,) = wormholeRelayer.quoteEVMDeliveryPrice(targetChain, 0, GAS_LIMIT);
+        uint256 deliveryCost;
+        (deliveryCost,) = wormholeRelayer.quoteEVMDeliveryPrice(targetChain, 0, GAS_LIMIT);
+        cost = deliveryCost + 2 * wormhole.messageFee();
     }
 
     function sendCrossChainDeposit(
@@ -38,7 +40,7 @@ contract HelloMultipleTokens is TokenSender, TokenReceiver {
         uint256 cost = quoteCrossChainDeposit(targetChain);
         require(msg.value == cost, "msg.value must be quoteCrossChainDeposit(targetChain)");
 
-        wormholeRelayer.sendVaasToEvm{value: cost}(
+        wormholeRelayer.sendVaasToEvm{value: cost - 2 * wormhole.messageFee()}(
             targetChain,
             targetHelloTokens,
             payload,

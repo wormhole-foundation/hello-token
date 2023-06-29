@@ -11,7 +11,9 @@ contract HelloToken is TokenSender, TokenReceiver {
     {}
 
     function quoteCrossChainDeposit(uint16 targetChain) public view returns (uint256 cost) {
-        (cost,) = wormholeRelayer.quoteEVMDeliveryPrice(targetChain, 0, GAS_LIMIT);
+        uint256 deliveryCost;
+        (deliveryCost,) = wormholeRelayer.quoteEVMDeliveryPrice(targetChain, 0, GAS_LIMIT);
+        cost = deliveryCost + wormhole.messageFee();
     }
 
     function sendCrossChainDeposit(
@@ -28,7 +30,13 @@ contract HelloToken is TokenSender, TokenReceiver {
 
         bytes memory payload = abi.encode(recipient);
         sendTokenWithPayloadToEvm(
-            targetChain, targetHelloToken, payload, 0, GAS_LIMIT, cost, token, amount
+            targetChain, 
+            targetHelloToken, // address (on targetChain) to send token and payload to
+            payload, 
+            0, // receiver value
+            GAS_LIMIT, 
+            token, 
+            amount
         );
     }
 
