@@ -202,7 +202,7 @@ function receivePayloadAndTokens(
 
 ******Note:****** We don’t need to prevent duplicate deliveries using the delivery hash, because TokenBridge already has a form of duplicate prevention when redeeming sent tokens
 
-And voila! We have a complete working example of a cross-chain application that uses TokenBridge to send and receive tokens!
+And voila! We have a [complete working example](https://github.com/wormhole-foundation/hello-token/blob/main/src/HelloToken.sol) of a cross-chain application that uses TokenBridge to send and receive tokens!
 
 Try [cloning and running HelloToken](https://github.com/wormhole-foundation/hello-token/tree/main#readme) to see this example work for yourself! 
 
@@ -306,6 +306,8 @@ function sendTokenWithPayloadToEvm(
 }
 ```
 
+Note: If you wish to send multiple different tokens along with the payload, the `sendTokenWithPayloadToEvm` helper as currently implemented will not help (as it sends only one token). However, you can still simply call `transferToken` twice and request delivery of both of those TokenBridge wormhole messages by providing two VaaKey structs in the 'vaaKeys' array. [See an example of HelloToken with more than one token here](https://github.com/wormhole-foundation/hello-token/blob/main/src/example-extensions/HelloMultipleTokens.sol). 
+
 ### Receiving a Token
 
 We know that our ‘sendVaasToEvm’ call will cause `receiveWormholeMessages` on ‘targetAddress’ to be called with
@@ -369,3 +371,5 @@ function receiveWormholeMessages(
 ```
 
 See the [full implementation of the Wormhole Relayer SDK helpers here](https://github.com/wormhole-foundation/wormhole-solidity-sdk/blob/main/src/WormholeRelayerSDK.sol)
+
+Also, see a [version of HelloToken implemented without any Wormhole Relayer SDK helpers here](https://github.com/wormhole-foundation/hello-token/blob/main/src/example-extensions/HelloTokenWithoutSDK.sol)
