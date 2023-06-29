@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import "wormhole-relayer-solidity-sdk/WormholeRelayerSDK.sol";
+import "wormhole-solidity-sdk/WormholeRelayerSDK.sol";
 
 contract HelloToken is TokenSender, TokenReceiver {
     uint256 constant GAS_LIMIT = 250_000;

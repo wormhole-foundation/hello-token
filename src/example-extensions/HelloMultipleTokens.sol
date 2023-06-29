@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import "wormhole-relayer-solidity-sdk/WormholeRelayerSDK.sol";
+import "wormhole-solidity-sdk/WormholeRelayerSDK.sol";
 
 contract HelloMultipleTokens is TokenSender, TokenReceiver {
     uint256 constant GAS_LIMIT = 400_000;
@@ -52,7 +52,7 @@ contract HelloMultipleTokens is TokenSender, TokenReceiver {
         bytes memory payload,
         TokenReceived[] memory receivedTokens,
         bytes32, // sourceAddress
-        uint16 sourceChain,
+        uint16,
         bytes32 // deliveryHash
     ) internal override onlyWormholeRelayer {
         require(receivedTokens.length == 2, "Expected 2 token transfers");
