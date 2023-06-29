@@ -27,7 +27,7 @@ contract HelloToken is TokenSender, TokenReceiver {
         address token
     ) public payable {
         uint256 cost = quoteCrossChainDeposit(targetChain);
-        require(msg.value == cost, "msg.value must be quoteRemoteDeposit(targetChain)");
+        require(msg.value == cost, "msg.value must be quoteCrossChainDeposit(targetChain)");
 
         IERC20(token).transferFrom(msg.sender, address(this), amount);
 
