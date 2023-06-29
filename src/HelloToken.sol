@@ -11,8 +11,11 @@ contract HelloToken is TokenSender, TokenReceiver {
     {}
 
     function quoteCrossChainDeposit(uint16 targetChain) public view returns (uint256 cost) {
+        // Cost of delivering token and payload to targetChain
         uint256 deliveryCost;
         (deliveryCost,) = wormholeRelayer.quoteEVMDeliveryPrice(targetChain, 0, GAS_LIMIT);
+
+        // Total cost: delivery cost + cost of publishing the 'sending token' wormhole message
         cost = deliveryCost + wormhole.messageFee();
     }
 
@@ -35,7 +38,7 @@ contract HelloToken is TokenSender, TokenReceiver {
             payload, 
             0, // receiver value
             GAS_LIMIT, 
-            token, 
+            token, // address of IERC20 token contract
             amount
         );
     }
