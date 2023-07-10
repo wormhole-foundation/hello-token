@@ -63,4 +63,25 @@ contract HelloTokenTest is WormholeRelayerTest {
  
         assertEq(IERC20(wormholeWrappedToken).balanceOf(recipient), amount);
     }
+
+    function testCrossChainDeposit_Complete() public {
+        uint256 amount = 19e17;
+        token.approve(address(helloSource), amount);
+
+        vm.selectFork(targetFork);
+        address recipient = 0x1234567890123456789012345678901234567890;
+
+        vm.selectFork(sourceFork);
+        uint256 cost = helloSource.quoteCrossChainDeposit(targetChain);
+
+        vm.recordLogs();
+        helloSource.sendCrossChainDeposit{value: cost}(
+            targetChain, address(helloTarget), recipient, amount, address(token)
+        );
+        performDelivery();
+
+        vm.selectFork(targetFork);
+        address wormholeWrappedToken = tokenBridgeTarget.wrappedAsset(sourceChain, toWormholeFormat(address(token)));
+        assertEq(IERC20(wormholeWrappedToken).balanceOf(recipient), amount);
+    }
 }
