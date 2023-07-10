@@ -397,3 +397,6 @@ function receiveWormholeMessages(
 See the full implementation of the Wormhole Relayer SDK helpers [here](https://github.com/wormhole-foundation/wormhole-solidity-sdk/blob/main/src/WormholeRelayerSDK.sol)
 
 Also, see a version of HelloToken implemented without any Wormhole Relayer SDK helpers [here](https://github.com/wormhole-foundation/hello-token/blob/main/src/example-extensions/HelloTokenWithoutSDK.sol)
+
+as well as a version of HelloToken where native currency is deposited [here](https://github.com/wormhole-foundation/hello-token/blob/main/src/example-extensions/HelloTokenNative.sol)
+
