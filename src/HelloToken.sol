@@ -15,6 +15,18 @@ contract HelloToken is TokenSender, TokenReceiver {
         cost = 0;
     }
 
+    /**
+     * Sends, through Token Bridge, 
+     * 'amount' of the IERC20 token 'wrappedToken'
+     * to the address 'recipient' on chain 'targetChain'
+     * 
+     * where 'wrappedToken' is a wormhole-wrapped version
+     * of the IERC20 token 'token' on this chain (which can later 
+     * be redeemed for 'token')
+     * 
+     * Assumes that 'amount' of 'token' was approved to be transferred
+     * from msg.sender to this contract
+     */
     function sendCrossChainDeposit(
         uint16 targetChain,
         address targetHelloToken,
