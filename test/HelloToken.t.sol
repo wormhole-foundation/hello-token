@@ -32,24 +32,35 @@ contract HelloTokenTest is WormholeRelayerTest {
         );
     }
 
-    function testRemoteDeposit() public {
+    function testCrossChainDeposit_Step1() public {
+
+        bytes32 sourceAddress = toWormholeFormat(address(helloSource));
+
         uint256 amount = 19e17;
-        token.approve(address(helloSource), amount);
+        token.approve(address(tokenBridgeSource), amount);
+
+        vm.recordLogs(); 
+        tokenBridgeSource.transferTokensWithPayload(address(token), amount, targetChain, toWormholeFormat(address(helloTarget)), 0, bytes(""));
+        Vm.Log[] memory logs = vm.getRecordedLogs();
+        bytes memory signedVaa = guardianSource.fetchSignedMessageFromLogs(logs[logs.length - 1], sourceChain);
 
         vm.selectFork(targetFork);
+
         address recipient = 0x1234567890123456789012345678901234567890;
+        bytes[] memory signedVaas = new bytes[](1);
+        signedVaas[0] = signedVaa;
 
-        vm.selectFork(sourceFork);
-        uint256 cost = helloSource.quoteCrossChainDeposit(targetChain);
-
-        vm.recordLogs();
-        helloSource.sendCrossChainDeposit{value: cost}(
-            targetChain, address(helloTarget), recipient, amount, address(token)
+        vm.prank(address(relayerTarget));
+        helloTarget.receiveWormholeMessages(
+            abi.encode(recipient),
+            signedVaas,
+            sourceAddress,
+            sourceChain,
+            keccak256("Arbitrary Delivery Hash")
         );
-        performDelivery();
 
-        vm.selectFork(targetFork);
         address wormholeWrappedToken = tokenBridgeTarget.wrappedAsset(sourceChain, toWormholeFormat(address(token)));
+ 
         assertEq(IERC20(wormholeWrappedToken).balanceOf(recipient), amount);
     }
 }
