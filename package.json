@@ -2,9 +2,9 @@
   "name": "hello-token",
   "version": "1.0.0",
   "main": "ts-scripts/main.ts",
-  "repository": "git@github.com:JoeHowarth/hello-token.git",
-  "author": "Joe Howarth <josephehowarth@gmail.com>",
-  "license": "MIT",
+  "repository": "git@github.com:wormhole-foundation/hello-token.git",
+  "author": "Wormhole Contributors",
+  "license": "Apache 2.0",
   "scripts": {
     "main": "ts-node ./ts-scripts/main.ts",
     "deploy": "npm run build; npm run deployMockToken; npm run deployHelloToken",
