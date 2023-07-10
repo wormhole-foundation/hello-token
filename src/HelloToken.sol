@@ -27,7 +27,7 @@ contract HelloToken is TokenSender, TokenReceiver {
         bytes memory payload,
         TokenReceived[] memory receivedTokens,
         bytes32, // sourceAddress
-        uint16,
+        uint16, // sourceChain
         bytes32 // deliveryHash
     ) internal override {
         // implement this function!
