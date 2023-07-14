@@ -8,7 +8,7 @@ import "wormhole-solidity-sdk/testing/WormholeRelayerTest.sol";
 import "forge-std/Test.sol";
 import "forge-std/console.sol";
 
-contract HelloMultipleTokensTest is WormholeRelayerTest {
+contract HelloMultipleTokensTest is WormholeRelayerBasicTest {
     event GreetingReceived(string greeting, uint16 senderChain, address sender);
 
     HelloMultipleTokens public helloSource;
@@ -24,8 +24,8 @@ contract HelloMultipleTokensTest is WormholeRelayerTest {
             address(wormholeSource)
         );
 
-        tokenA = createAndAttestToken(sourceFork);
-        tokenB = createAndAttestToken(sourceFork);
+        tokenA = createAndAttestToken(sourceChain);
+        tokenB = createAndAttestToken(sourceChain);
     }
 
     function setUpTarget() public override {
