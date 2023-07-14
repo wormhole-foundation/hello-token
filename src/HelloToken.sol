@@ -4,7 +4,6 @@ pragma solidity ^0.8.13;
 import "wormhole-solidity-sdk/WormholeRelayerSDK.sol";
 
 contract HelloToken is TokenSender, TokenReceiver {
-    uint256 constant GAS_LIMIT = 250_000;
 
     constructor(address _wormholeRelayer, address _tokenBridge, address _wormhole)
         TokenBase(_wormholeRelayer, _tokenBridge, _wormhole)
@@ -40,20 +39,31 @@ contract HelloToken is TokenSender, TokenReceiver {
         // Transfer 'amount' of token from 'msg.sender' to this contract
         // and then call sendTokenWithPayloadToEvm with the appropriate inputs!
         //
-        // Test your code with 'forge test'
+        // run 'forge test' to test your implementation   
     }
 
+    /**
+     * receivePayloadAndTokens should 
+     * 1) obtain the intended 'recipient' address from the payload
+     * 2) transfer the correct amount of the correct token to that address
+     * 
+     * Only 'wormholeRelayer' should be allowed to call this method
+     * 
+     * @param payload the payload sent by 'sendCrossChainDeposit'
+     * @param receivedTokens This will be an array of length 1
+     * describing the amount and address of the token received
+     * (the 'amount' field indicates the amount,
+     * and the 'tokenAddress' field indicates the address of the IERC20 token
+     * that was received, which will be a wormhole-wrapped version of the sent token)
+     */
     function receivePayloadAndTokens(
         bytes memory payload,
         TokenReceived[] memory receivedTokens,
         bytes32, // sourceAddress
-        uint16,
+        uint16, // sourceChain
         bytes32 // deliveryHash
-    ) internal override onlyWormholeRelayer {
-        require(receivedTokens.length == 1, "Expected 1 token transfers");
-
-        address recipient = abi.decode(payload, (address));
-
-        IERC20(receivedTokens[0].tokenAddress).transfer(recipient, receivedTokens[0].amount);
+    ) internal override {
+        // implement this function!
+        // run 'forge test' to test your implementation   
     }
 }
