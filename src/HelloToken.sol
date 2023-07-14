@@ -4,7 +4,6 @@ pragma solidity ^0.8.13;
 import "wormhole-solidity-sdk/WormholeRelayerSDK.sol";
 
 contract HelloToken is TokenSender, TokenReceiver {
-    uint256 constant GAS_LIMIT = 250_000;
 
     constructor(address _wormholeRelayer, address _tokenBridge, address _wormhole)
         TokenBase(_wormholeRelayer, _tokenBridge, _wormhole)
