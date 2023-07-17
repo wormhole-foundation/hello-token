@@ -81,7 +81,11 @@ contract HelloTokenWithoutSDK is IWormholeReceiver {
         tokenBridge.completeTransfer(additionalVaas[0]);
 
         address wrappedTokenAddress = transfer.tokenChain == wormhole.chainId() ? fromWormholeFormat(transfer.tokenAddress) : tokenBridge.wrappedAsset(transfer.tokenChain, transfer.tokenAddress);
-        IERC20(wrappedTokenAddress).transfer(recipient, transfer.amount * 10 ** getDecimals(wrappedTokenAddress)); // 
+        
+        uint256 decimals = getDecimals(wrappedTokenAddress);
+        uint256 powerOfTen = 0;
+        if(decimals > 8) powerOfTen = decimals - 8;
+        IERC20(wrappedTokenAddress).transfer(recipient, transfer.amount * 10 ** powerOfTen); // 
     }
 
 }
