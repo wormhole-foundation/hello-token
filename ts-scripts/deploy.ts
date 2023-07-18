@@ -12,9 +12,9 @@ import {
 export async function deploy() {
   const config = loadConfig()
 
-  // fuij and celo
+  // avalanche and moonbeam
   const deployed = loadDeployedAddresses()
-  for (const chainId of [6, 14]) {
+  for (const chainId of [6, 16]) {
     const chain = getChain(chainId)
     const signer = getWallet(chainId)
 

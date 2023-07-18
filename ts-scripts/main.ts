@@ -33,7 +33,7 @@ async function sendRemoteDeposit() {
   const recipient = getArg(["--recipient", "-r"]) || "";
 
   const from = 6
-  const to = 14
+  const to = 16
   const amount = ethers.utils.parseEther("10")
 
   const helloToken = getHelloToken(from)

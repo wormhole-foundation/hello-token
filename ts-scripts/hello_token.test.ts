@@ -20,7 +20,7 @@ import {
 } from "@certusone/wormhole-sdk"
 
 const sourceChain = 6;
-const targetChain = 14;
+const targetChain = 16;
 
 describe("Hello Tokens Integration Tests on Testnet", () => {
     test("Tests the sending of a token", async () => {
@@ -39,6 +39,7 @@ describe("Hello Tokens Integration Tests on Testnet", () => {
         const targetHelloTokenContract = getHelloToken(targetChain);
 
         const walletOriginalBalanceOfWrappedHTToken = await wormholeWrappedHTTokenOnTargetChain.balanceOf(walletTargetChainAddress);
+        console.log("Original ampunt of HT tokens", walletOriginalBalanceOfWrappedHTToken);
 
         const cost = await sourceHelloTokenContract.quoteCrossChainDeposit(targetChain);
         console.log(`Cost of sending the tokens: ${ethers.utils.formatEther(cost)} testnet AVAX`);
@@ -55,7 +56,7 @@ describe("Hello Tokens Integration Tests on Testnet", () => {
         await tx.wait();
         console.log(`See transaction at: https://testnet.snowtrace.io/tx/${tx.hash}`);
 
-        await new Promise(resolve => setTimeout(resolve, 1000*15));
+        await new Promise(resolve => setTimeout(resolve, 1000*30));
 
         /*
         console.log("Checking relay status");
@@ -64,8 +65,10 @@ describe("Hello Tokens Integration Tests on Testnet", () => {
         console.log(`Info: ${res.info}`); */
 
         console.log(`Seeing if token was sent`);
-        const walletCurrentBalanceOfWrappedHTToken = await wormholeWrappedHTTokenOnTargetChain.balanceOf(walletTargetChainAddress);
 
+        const walletCurrentBalanceOfWrappedHTToken = await wormholeWrappedHTTokenOnTargetChain.balanceOf(walletTargetChainAddress);
+        
+        console.log("Wallet Current Balance of Wrapped HT Token:", walletCurrentBalanceOfWrappedHTToken.toString());
         expect(walletCurrentBalanceOfWrappedHTToken.sub(walletOriginalBalanceOfWrappedHTToken).toString()).toBe(arbitraryTokenAmount.toString());
     }, 60*1000) // timeout
 })
