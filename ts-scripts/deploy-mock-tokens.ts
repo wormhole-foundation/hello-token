@@ -24,7 +24,7 @@ export async function deployMockToken() {
   const from = getChain(6)
 
   const signer = getWallet(from.chainId)
-  const HT = await new ERC20Mock__factory(signer).deploy("HelloToken", "HT")
+  const HT = await new ERC20Mock__factory(signer).deploy("EncodeParis", "EP")
   await HT.deployed()
   console.log(`HT deployed to ${HT.address} on chain ${from.chainId}`)
   deployed.erc20s[6] = [HT.address]
