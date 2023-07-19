@@ -42,7 +42,7 @@ Test result: ok. 1 passed; 0 failed; finished in 5.64s
 You will need a wallet with at least 0.05 Testnet AVAX and 0.01 Testnet CELO. 
 
 - [Obtain testnet AVAX here](https://core.app/tools/testnet-faucet/?token=C)
-- [Obtain testnet CELO here](https://faucet.celo.org/alfajores)
+- [Obtain testnet Moonbase ]
 
 ```bash
 EVM_PRIVATE_KEY=your_wallet_private_key npm run deploy

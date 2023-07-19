@@ -31,7 +31,7 @@ export async function deployMockToken() {
 
   console.log("Minting...")
   await HT.mint(signer.address, ethers.utils.parseEther("10")).then(wait)
-  console.log("Minted 10 HT to signer")
+  console.log("Minted 10 EP Tokens to signer")
 
   console.log(
     `Attesting tokens with token bridge on chain(s) ${loadConfig()
