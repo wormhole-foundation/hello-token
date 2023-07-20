@@ -37,10 +37,10 @@ Test result: ok. 1 passed; 0 failed; finished in 5.64s
 
 ### Deploying to Testnet
 
-Ensure you have a wallet with at least 0.05 Testnet AVAX and 0.01 Testnet CELO.
+Ensure you have a wallet with at least 0.05 Testnet AVAX and 0.01 Moonbase DEV.
 
 - [Obtain Testnet AVAX here](https://core.app/tools/testnet-faucet/?token=C)
-- [Obtain Testnet Moonbase]
+- [Obtain Testnet Moonbase](https://app.beamswap.io/bridge/faucet)
 
 ```bash
 EVM_PRIVATE_KEY=your_wallet_private_key npm run deploy
