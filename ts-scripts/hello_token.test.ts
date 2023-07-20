@@ -1,4 +1,4 @@
-import {describe, expect, test} from "@jest/globals";
+import { describe, expect, test } from "@jest/globals";
 import { ethers } from "ethers";
 import {
     getHelloToken,
@@ -26,7 +26,7 @@ describe("Hello Tokens Integration Tests on Testnet", () => {
     test("Tests the sending of a token", async () => {
         // Token Bridge can only deal with 8 decimal places
         // So we send a multiple of 10^10, since this MockToken has 18 decimal places
-        const arbitraryTokenAmount = ethers.BigNumber.from((new Date().getTime()) % (10 ** 7)).mul(10**10);
+        const arbitraryTokenAmount = ethers.BigNumber.from(10).mul(10 ** 10);
 
         const HTtoken = ERC20Mock__factory.connect(getDeployedAddresses().erc20s[sourceChain][0], getWallet(sourceChain));
 
@@ -44,31 +44,26 @@ describe("Hello Tokens Integration Tests on Testnet", () => {
         const cost = await sourceHelloTokenContract.quoteCrossChainDeposit(targetChain);
         console.log(`Cost of sending the tokens: ${ethers.utils.formatEther(cost)} testnet AVAX`);
 
+        // Create Signer
         // Approve the HelloToken contract to use 'arbitraryTokenAmount' of our HT token
         const approveTx = await HTtoken.approve(sourceHelloTokenContract.address, arbitraryTokenAmount).then(wait);
         console.log(`HelloToken contract approved to spend ${ethers.utils.formatEther(arbitraryTokenAmount)} of our HT token`)
 
         console.log(`Sending ${ethers.utils.formatEther(arbitraryTokenAmount)} of the HT token`);
 
-        const tx = await sourceHelloTokenContract.sendCrossChainDeposit(targetChain, targetHelloTokenContract.address, walletTargetChainAddress, arbitraryTokenAmount, HTtoken.address, {value: cost});
-        
+        const tx = await sourceHelloTokenContract.sendCrossChainDeposit(targetChain, targetHelloTokenContract.address, walletTargetChainAddress, arbitraryTokenAmount, HTtoken.address, { value: cost });
+
         console.log(`Transaction hash: ${tx.hash}`);
         await tx.wait();
         console.log(`See transaction at: https://testnet.snowtrace.io/tx/${tx.hash}`);
 
-        await new Promise(resolve => setTimeout(resolve, 1000*30));
-
-        /*
-        console.log("Checking relay status");
-        const res = await getStatus(CHAIN_ID_TO_NAME[sourceChain], tx.hash);
-        console.log(`Status: ${res.status}`);
-        console.log(`Info: ${res.info}`); */
+        await new Promise(resolve => setTimeout(resolve, 1000 * 30));
 
         console.log(`Seeing if token was sent`);
 
         const walletCurrentBalanceOfWrappedHTToken = await wormholeWrappedHTTokenOnTargetChain.balanceOf(walletTargetChainAddress);
-        
+
         console.log("Wallet Current Balance of Wrapped HT Token:", walletCurrentBalanceOfWrappedHTToken.toString());
         expect(walletCurrentBalanceOfWrappedHTToken.sub(walletOriginalBalanceOfWrappedHTToken).toString()).toBe(arbitraryTokenAmount.toString());
-    }, 60*1000) // timeout
+    }, 60 * 1000) // timeout
 })
