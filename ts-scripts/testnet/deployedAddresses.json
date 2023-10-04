@@ -7,8 +7,32 @@
     null,
     null,
     [
-      "0x1663D0d9EC712A2E5d344B7bAa2aAB3E7F2a005F"
-    ]
+      "0xf2D5cCC108bb977e1F8a9C7239E572EFFffF09a1"
+    ],
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
   ],
   "helloToken": [
     null,
@@ -25,6 +49,23 @@
     null,
     null,
     null,
-    "0x9922398dcFaFC224fACcF7f0496Ab0BDF9482e59"
+    "0x9922398dcFaFC224fACcF7f0496Ab0BDF9482e59",
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    "0x518b4c3CFb9DDA0Ac0591aD36409eb8b6129EA76",
+    "0xb6A04D6672F005787147472Be20d39741929Aa03",
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
   ]
 }

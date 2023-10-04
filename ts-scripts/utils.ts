@@ -1,58 +1,64 @@
-import { ethers, Wallet } from "ethers"
-import { readFileSync, writeFileSync } from "fs"
+import { ethers, Wallet } from "ethers";
+import { readFileSync, writeFileSync } from "fs";
 
-import { HelloToken, HelloToken__factory } from "./ethers-contracts"
+import { HelloToken, HelloToken__factory } from "./ethers-contracts";
+import { ChainId } from "@certusone/wormhole-sdk";
 
 export interface ChainInfo {
-  description: string
-  chainId: number
-  rpc: string
-  tokenBridge: string
-  wormholeRelayer: string
-  wormhole: string
+  description: string;
+  chainId: number;
+  rpc: string;
+  tokenBridge: string;
+  wormholeRelayer: string;
+  wormhole: string;
 }
 
 export interface Config {
-  chains: ChainInfo[]
+  chains: ChainInfo[];
+  sourceChain: ChainId;
+  targetChain: ChainId;
 }
 export interface DeployedAddresses {
-  helloToken: Record<number, string>
-  erc20s: Record<number, string[]>
+  helloToken: Record<number, string>;
+  erc20s: Record<number, string[]>;
 }
 
 export function getHelloToken(chainId: number) {
-  const deployed = loadDeployedAddresses().helloToken[chainId]
+  const deployed = loadDeployedAddresses().helloToken[chainId];
   if (!deployed) {
-    throw new Error(`No deployed hello token on chain ${chainId}`)
+    throw new Error(`No deployed hello token on chain ${chainId}`);
   }
-  return HelloToken__factory.connect(deployed, getWallet(chainId))
+  return HelloToken__factory.connect(deployed, getWallet(chainId));
 }
 
 export function getChain(chainId: number): ChainInfo {
-  const chain = loadConfig().chains.find(c => c.chainId === chainId)!
+  const chain = loadConfig().chains.find((c) => c.chainId === chainId)!;
   if (!chain) {
-    throw new Error(`Chain ${chainId} not found`)
+    throw new Error(`Chain ${chainId} not found`);
   }
-  return chain
+  return chain;
 }
 
 export function getWallet(chainId: number): Wallet {
-  const rpc = loadConfig().chains.find(c => c.chainId === chainId)?.rpc
-  let provider = new ethers.providers.JsonRpcProvider(rpc)
-  if(!process.env.EVM_PRIVATE_KEY) throw Error("No private key provided (use the EVM_PRIVATE_KEY environment variable)")
-  return new Wallet(process.env.EVM_PRIVATE_KEY!, provider)
+  const rpc = loadConfig().chains.find((c) => c.chainId === chainId)?.rpc;
+  let provider = new ethers.providers.JsonRpcProvider(rpc);
+  if (!process.env.EVM_PRIVATE_KEY)
+    throw Error(
+      "No private key provided (use the EVM_PRIVATE_KEY environment variable)"
+    );
+  return new Wallet(process.env.EVM_PRIVATE_KEY!, provider);
 }
 
-let _config: Config | undefined
-let _deployed: DeployedAddresses | undefined
+let _config: Config | undefined;
+let _deployed: DeployedAddresses | undefined;
 
 export function loadConfig(): Config {
   if (!_config) {
     _config = JSON.parse(
       readFileSync("ts-scripts/testnet/config.json", { encoding: "utf-8" })
-    )
+    );
   }
-  return _config!
+  return _config!;
 }
 
 export function loadDeployedAddresses(): DeployedAddresses {
@@ -61,26 +67,26 @@ export function loadDeployedAddresses(): DeployedAddresses {
       readFileSync("ts-scripts/testnet/deployedAddresses.json", {
         encoding: "utf-8",
       })
-    )
+    );
     if (!deployed) {
       _deployed = {
         erc20s: [],
         helloToken: [],
-      }
+      };
     }
   }
-  return _deployed!
+  return _deployed!;
 }
 
 export function storeDeployedAddresses(deployed: DeployedAddresses) {
   writeFileSync(
     "ts-scripts/testnet/deployedAddresses.json",
     JSON.stringify(deployed, undefined, 2)
-  )
+  );
 }
 
 export function checkFlag(patterns: string | string[]) {
-  return getArg(patterns, { required: false, isFlag: true })
+  return getArg(patterns, { required: false, isFlag: true });
 }
 
 export function getArg(
@@ -93,29 +99,29 @@ export function getArg(
     required: true,
   }
 ): string | undefined {
-  let idx: number = -1
+  let idx: number = -1;
   if (typeof patterns === "string") {
-    patterns = [patterns]
+    patterns = [patterns];
   }
   for (const pattern of patterns) {
-    idx = process.argv.findIndex(x => x === pattern)
+    idx = process.argv.findIndex((x) => x === pattern);
     if (idx !== -1) {
-      break
+      break;
     }
   }
   if (idx === -1) {
     if (required) {
       throw new Error(
         "Missing required cmd line arg: " + JSON.stringify(patterns)
-      )
+      );
     }
-    return undefined
+    return undefined;
   }
   if (isFlag) {
-    return process.argv[idx]
+    return process.argv[idx];
   }
-  return process.argv[idx + 1]
+  return process.argv[idx + 1];
 }
 
-export const deployed = (x: any) => x.deployed()
-export const wait = (x: any) => x.wait()
+export const deployed = (x: any) => x.deployed();
+export const wait = (x: any) => x.wait();

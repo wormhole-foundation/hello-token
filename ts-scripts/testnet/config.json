@@ -1,5 +1,15 @@
 {
+  "sourceChain": 6,
+  "targetChain": 14,
   "chains": [
+    {
+      "description": "Goerli - Ethereum",
+      "chainId": 2,
+      "rpc": "https://ethereum-goerli.publicnode.com",
+      "tokenBridge": "0xF890982f9310df57d00f659cf4fd87e65adEd8d7",
+      "wormholeRelayer": "0x28D8F1Be96f97C1387e94A53e00eCcFb4E75175a",
+      "wormhole": "0x706abc4E45D419950511e474C7B9Ed348A4a716c"
+    },
     {
       "description": "Avalanche testnet fuji",
       "chainId": 6,
@@ -15,6 +25,54 @@
       "tokenBridge": "0x05ca6037eC51F8b712eD2E6Fa72219FEaE74E153",
       "wormholeRelayer": "0x306B68267Deb7c5DfCDa3619E22E9Ca39C374f84",
       "wormhole": "0x88505117CA88e7dd2eC6EA1E13f0948db2D50D56"
+    },
+    {
+      "description": "BSC Testnet",
+      "chainId": 4,
+      "rpc": "https://bsc-testnet.public.blastapi.io",
+      "tokenBridge": "0x9dcF9D205C9De35334D646BeE44b2D2859712A09",
+      "wormholeRelayer": "0x80aC94316391752A193C1c47E27D382b507c93F3",
+      "wormhole": "0x68605AD7b15c732a30b1BbC62BE8F2A509D74b4D"
+    },
+    {
+      "description": "Polygon Mumbai",
+      "chainId": 5,
+      "rpc": "https://rpc.ankr.com/polygon_mumbai",
+      "tokenBridge": "0x377D55a7928c046E18eEbb61977e714d2a76472a",
+      "wormholeRelayer": "0x0591C25ebd0580E0d4F27A82Fc2e24E7489CB5e0",
+      "wormhole": "0x0CBE91CF822c73C2315FB05100C2F714765d5c20"
+    },
+    {
+      "description": "Moonbase Alpha - Moonbeam",
+      "chainId": 16,
+      "rpc": "https://rpc.testnet.moonbeam.network",
+      "tokenBridge": "0xbc976D4b9D57E57c3cA52e1Fd136C45FF7955A96",
+      "wormholeRelayer": "0x0591C25ebd0580E0d4F27A82Fc2e24E7489CB5e0",
+      "wormhole": "0xa5B7D85a8f27dd7907dc8FdC21FA5657D5E2F901"
+    },
+    {
+      "description": "Goerli - Arbitrum",
+      "chainId": 23,
+      "rpc": "https://arbitrum-goerli.publicnode.com",
+      "tokenBridge": "0x23908A62110e21C04F3A4e011d24F901F911744A",
+      "wormholeRelayer": "0xAd753479354283eEE1b86c9470c84D42f229FF43",
+      "wormhole": "0xC7A204bDBFe983FCD8d8E61D02b475D4073fF97e"
+    },
+    {
+      "description": "Goerli - Optimism",
+      "chainId": 24,
+      "rpc": "https://optimism-goerli.publicnode.com",
+      "tokenBridge": "0xC7A204bDBFe983FCD8d8E61D02b475D4073fF97e",
+      "wormholeRelayer": "0x01A957A525a5b7A72808bA9D10c389674E459891",
+      "wormhole": "0x6b9C8671cdDC8dEab9c719bB87cBd3e782bA6a35"
+    },
+    {
+      "description": "Goerli - Base",
+      "chainId": 30,
+      "rpc": "https://goerli.base.org",
+      "tokenBridge": "0xA31aa3FDb7aF7Db93d18DDA4e19F811342EDF780",
+      "wormholeRelayer": "0xea8029CD7FCAEFFcD1F53686430Db0Fc8ed384E1",
+      "wormhole": "0x23908A62110e21C04F3A4e011d24F901F911744A"
     }
   ]
 }
