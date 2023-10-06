@@ -39,7 +39,7 @@ export async function deployMockToken() {
   console.log(
     `Attesting tokens with token bridge on chain(s) ${loadConfig()
       .chains.map((c) => c.chainId)
-      .filter((c) => c !== sourceChain)
+      .filter((c) => c === targetChain)
       .join(", ")}`
   );
   for (const chain of loadConfig().chains) {
