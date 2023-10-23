@@ -64,6 +64,30 @@ EVM_PRIVATE_KEY=your_wallet_private_key npm run test
 
 Let's write a [HelloToken contract](https://github.com/wormhole-foundation/hello-token/blob/main/src/HelloToken.sol) that lets users send an arbitrary amount of an IERC20 token to an address of their choosing on another chain.
 
+### Valid Tokens
+
+Before getting started, it is important to note that the receiving side Wormhole TokenBridge **must** have a mapping (TokenBridge created wrapped version of the token) for the token we're sending. 
+
+We can check if this mapping exists by calling the receiving side TokenBridge `wrappedAsset` function with the details of the token we're trying to send. 
+
+If one exists, we can proceed to the next step. 
+
+<details>
+<summary>Creating a wrapped token</summary>
+
+To create a Wrapped token:
+
+1) On the Source side: Call the TokenBridge `attestToken` function with the token we're trying to send. 
+    > This creates a payload containing the token details so that it may be created on the receiving side
+2) Off chain: [Fetch the VAA](https://docs.wormhole.com/wormhole/reference/api-docs/swagger#v1-signed_vaa-chain_id-emitter-seq) using the Wormhole Chain ID, Emitter address (TokenBridge address) and sequence number from the `LogMessage` event.
+    > This is the VAA that contains the token details with signatures from the Guardians
+3) On the Receiving side: Call the TokenBridge `createWrapped` function with the VAA from the previous step
+    > This allows the TokenBridge to create a wrapped version of the token we're sending so that it may mint the tokens to the receiver.
+
+Once this is done, the TokenBridge on the receiving side can successfully mint the token sent. 
+
+</details>
+
 
 ### Wormhole Solidity SDK
 
