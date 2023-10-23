@@ -8,7 +8,7 @@ import {
   wait,
   loadConfig,
 } from "./utils";
-import { getStatus } from "./getStatus";
+import { waitForDelivery } from "./getStatus";
 import { ERC20Mock__factory, ITokenBridge__factory } from "./ethers-contracts";
 import {
   tryNativeToUint8Array,
@@ -95,13 +95,7 @@ describe("Hello Tokens Integration Tests on Testnet", () => {
       console.log(`Transaction hash: ${tx.hash}`);
       await tx.wait();
 
-      await new Promise((resolve) => setTimeout(resolve, 1000 * 15));
-
-      /*
-        console.log("Checking relay status");
-        const res = await getStatus(CHAIN_ID_TO_NAME[sourceChain], tx.hash);
-        console.log(`Status: ${res.status}`);
-        console.log(`Info: ${res.info}`); */
+      await waitForDelivery(CHAIN_ID_TO_NAME[sourceChain], tx.hash);
 
       console.log(`Seeing if token was sent`);
       const walletCurrentBalanceOfWrappedHTToken =
@@ -115,6 +109,6 @@ describe("Hello Tokens Integration Tests on Testnet", () => {
           .toString()
       ).toBe(arbitraryTokenAmount.toString());
     },
-    60 * 1000
+    60 * 1000 * 60
   ); // timeout
 });
