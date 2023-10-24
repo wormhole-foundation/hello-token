@@ -72,7 +72,7 @@ So, in order to send a token using the method in this example, the token must be
 
 In the test above, when you run `npm run deploy`, a mock token contract was both deployed and attested onto the target chain's Token Bridge contract.
 
-If you wish to attest a token yourself for the TokenBridge, you may use the [attestWorkflow](https://github.com/wormhole-foundation/hello-token/blob/main/ts-scripts/deploy-mock-token.ts#L52) function.
+If you wish to attest a token yourself for the TokenBridge, you may use the [attestWorkflow](https://github.com/wormhole-foundation/hello-token/blob/main/ts-scripts/deploy-mock-tokens.ts#L52) function.
 
 To check if a token already is attested onto a TokenBridge, call the `wrappedAsset(uint16 tokenChainId, bytes32 tokenAddress)` function on the TokenBridge - this will return, if attested, the address of the wrapped token on this blockchain corresponding to the given token (from the source blockchain), and the 0 address if the input token hasn't been attested yet.
 
