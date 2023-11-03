@@ -9,11 +9,8 @@ export async function getStatus(
     transactionHash,
     { environment: "TESTNET" }
   );
-  const status = info.targetChainStatus.events[0]?.status || "";
-  return {
-    status: status || relayer.DeliveryStatus.PendingDelivery,
-    info: relayer.stringifyWormholeRelayerInfo(info),
-  };
+  const status = info.targetChainStatus.events[0].status;
+  return { status, info: info.stringified || "Info not obtained" };
 }
 
 export const DeliveryStatus = relayer.DeliveryStatus;

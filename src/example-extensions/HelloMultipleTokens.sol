@@ -2,17 +2,26 @@
 pragma solidity ^0.8.13;
 
 import "wormhole-solidity-sdk/WormholeRelayerSDK.sol";
+import "wormhole-solidity-sdk/interfaces/IERC20.sol";
 
 contract HelloMultipleTokens is TokenSender, TokenReceiver {
     uint256 constant GAS_LIMIT = 400_000;
 
-    constructor(address _wormholeRelayer, address _tokenBridge, address _wormhole)
-        TokenBase(_wormholeRelayer, _tokenBridge, _wormhole)
-    {}
+    constructor(
+        address _wormholeRelayer,
+        address _tokenBridge,
+        address _wormhole
+    ) TokenBase(_wormholeRelayer, _tokenBridge, _wormhole) {}
 
-    function quoteCrossChainDeposit(uint16 targetChain) public view returns (uint256 cost) {
+    function quoteCrossChainDeposit(
+        uint16 targetChain
+    ) public view returns (uint256 cost) {
         uint256 deliveryCost;
-        (deliveryCost,) = wormholeRelayer.quoteEVMDeliveryPrice(targetChain, 0, GAS_LIMIT);
+        (deliveryCost, ) = wormholeRelayer.quoteEVMDeliveryPrice(
+            targetChain,
+            0,
+            GAS_LIMIT
+        );
         cost = deliveryCost + 2 * wormhole.messageFee();
     }
 
@@ -34,11 +43,24 @@ contract HelloMultipleTokens is TokenSender, TokenReceiver {
 
         // add transfers to additionalVaas list so they will be delivered along with the payload
         VaaKey[] memory vaaKeys = new VaaKey[](2);
-        vaaKeys[0] = transferTokens(tokenA, amountA, targetChain, targetHelloTokens);
-        vaaKeys[1] = transferTokens(tokenB, amountB, targetChain, targetHelloTokens);
+        vaaKeys[0] = transferTokens(
+            tokenA,
+            amountA,
+            targetChain,
+            targetHelloTokens
+        );
+        vaaKeys[1] = transferTokens(
+            tokenB,
+            amountB,
+            targetChain,
+            targetHelloTokens
+        );
 
         uint256 cost = quoteCrossChainDeposit(targetChain);
-        require(msg.value == cost, "msg.value must be quoteCrossChainDeposit(targetChain)");
+        require(
+            msg.value == cost,
+            "msg.value must be quoteCrossChainDeposit(targetChain)"
+        );
 
         wormholeRelayer.sendVaasToEvm{value: cost - 2 * wormhole.messageFee()}(
             targetChain,
@@ -63,8 +85,13 @@ contract HelloMultipleTokens is TokenSender, TokenReceiver {
         address recipient = abi.decode(payload, (address));
 
         // send tokens to recipient
-        IERC20(receivedTokens[0].tokenAddress).transfer(recipient, receivedTokens[0].amount);
-        IERC20(receivedTokens[1].tokenAddress).transfer(recipient, receivedTokens[1].amount);
-
+        IERC20(receivedTokens[0].tokenAddress).transfer(
+            recipient,
+            receivedTokens[0].amount
+        );
+        IERC20(receivedTokens[1].tokenAddress).transfer(
+            recipient,
+            receivedTokens[1].amount
+        );
     }
 }

@@ -2,18 +2,27 @@
 pragma solidity ^0.8.13;
 
 import "wormhole-solidity-sdk/WormholeRelayerSDK.sol";
+import "wormhole-solidity-sdk/interfaces/IERC20.sol";
 
 contract HelloToken is TokenSender, TokenReceiver {
     uint256 constant GAS_LIMIT = 250_000;
 
-    constructor(address _wormholeRelayer, address _tokenBridge, address _wormhole)
-        TokenBase(_wormholeRelayer, _tokenBridge, _wormhole)
-    {}
+    constructor(
+        address _wormholeRelayer,
+        address _tokenBridge,
+        address _wormhole
+    ) TokenBase(_wormholeRelayer, _tokenBridge, _wormhole) {}
 
-    function quoteCrossChainDeposit(uint16 targetChain) public view returns (uint256 cost) {
+    function quoteCrossChainDeposit(
+        uint16 targetChain
+    ) public view returns (uint256 cost) {
         // Cost of delivering token and payload to targetChain
         uint256 deliveryCost;
-        (deliveryCost,) = wormholeRelayer.quoteEVMDeliveryPrice(targetChain, 0, GAS_LIMIT);
+        (deliveryCost, ) = wormholeRelayer.quoteEVMDeliveryPrice(
+            targetChain,
+            0,
+            GAS_LIMIT
+        );
 
         // Total cost: delivery cost + cost of publishing the 'sending token' wormhole message
         cost = deliveryCost + wormhole.messageFee();
@@ -27,17 +36,20 @@ contract HelloToken is TokenSender, TokenReceiver {
         address token
     ) public payable {
         uint256 cost = quoteCrossChainDeposit(targetChain);
-        require(msg.value == cost, "msg.value must be quoteCrossChainDeposit(targetChain)");
+        require(
+            msg.value == cost,
+            "msg.value must be quoteCrossChainDeposit(targetChain)"
+        );
 
         IERC20(token).transferFrom(msg.sender, address(this), amount);
 
         bytes memory payload = abi.encode(recipient);
         sendTokenWithPayloadToEvm(
-            targetChain, 
+            targetChain,
             targetHelloToken, // address (on targetChain) to send token and payload to
-            payload, 
+            payload,
             0, // receiver value
-            GAS_LIMIT, 
+            GAS_LIMIT,
             token, // address of IERC20 token contract
             amount
         );
@@ -54,6 +66,9 @@ contract HelloToken is TokenSender, TokenReceiver {
 
         address recipient = abi.decode(payload, (address));
 
-        IERC20(receivedTokens[0].tokenAddress).transfer(recipient, receivedTokens[0].amount);
+        IERC20(receivedTokens[0].tokenAddress).transfer(
+            recipient,
+            receivedTokens[0].amount
+        );
     }
 }
