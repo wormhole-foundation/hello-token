@@ -7,24 +7,71 @@
     null,
     null,
     [
-      "0x1663D0d9EC712A2E5d344B7bAa2aAB3E7F2a005F"
+      "0xf2D5cCC108bb977e1F8a9C7239E572EFFffF09a1"
+    ],
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    [
+      "0x1a4dE85e856599142980f2fBed8587ff53F1530B"
+    ],
+    [
+      "0x8D80B0B5De3C0a214dA6Fd8022AbAa6E77180B08"
+    ],
+    null,
+    null,
+    null,
+    null,
+    null,
+    [
+      "0x46379De09a56178ed43bD79Ff20DE6F163eB7D20"
     ]
   ],
   "helloToken": [
     null,
     null,
+    "0x47bBC88Ae36803C405CE1E0CaA8419E9eE35CFb8",
+    null,
+    "0x5C8f6E90e59ea4c6C8EA0899c6529b3b49DAeB30",
+    null,
+    "0x64EDBf0f70b60d30eFB0e8d79Af30164f6996fA9",
     null,
     null,
     null,
     null,
-    "0xB3b908f5c0C313429De91FFb239Ab22eD5Bcb54a",
+    null,
+    null,
+    null,
+    "0xED8510d4ddcD34Ec352dF45F20185F90F24eD0b4",
+    null,
+    "0x2768B7BDc5cD3154553021A74534e85Ac6cdc07D",
     null,
     null,
     null,
     null,
     null,
     null,
+    "0xb7F4Ff1ddd5F46fB40cc51C763D2DDeF7C957859",
+    "0x93d56f29542c156B3e36f10dE41124B499664ff7",
     null,
-    "0x9922398dcFaFC224fACcF7f0496Ab0BDF9482e59"
+    null,
+    null,
+    null,
+    null,
+    "0xFE1BE9F3f86bDA2Eb36D317DCFA1C63207952fC2",
+    null
   ]
 }
