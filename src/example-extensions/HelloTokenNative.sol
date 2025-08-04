@@ -17,16 +17,12 @@ contract HelloTokenNative is TokenSender, TokenReceiver {
     function quoteCrossChainDeposit(
         uint16 targetChain
     ) public view returns (uint256 cost) {
-        // Cost of delivering token and payload to targetChain
-        uint256 deliveryCost;
-        (deliveryCost, ) = wormholeRelayer.quoteEVMDeliveryPrice(
+        // Cost of delivering token and payload to targetChain (wormhole message fee is already included)
+        (cost, ) = wormholeRelayer.quoteEVMDeliveryPrice(
             targetChain,
             0,
             GAS_LIMIT
         );
-
-        // Total cost: delivery cost + cost of publishing the 'sending token' wormhole message
-        cost = deliveryCost + wormhole.messageFee();
     }
 
     function sendCrossChainDeposit(
