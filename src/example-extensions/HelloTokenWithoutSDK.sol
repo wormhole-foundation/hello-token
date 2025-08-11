@@ -21,9 +21,8 @@ contract HelloTokenWithoutSDK is IWormholeReceiver {
     }
 
     function quoteCrossChainDeposit(uint16 targetChain) public view returns (uint256 cost) {
-        uint256 deliveryCost;
-        (deliveryCost,) = wormholeRelayer.quoteEVMDeliveryPrice(targetChain, 0, GAS_LIMIT);
-        cost = deliveryCost + wormhole.messageFee();
+        // Cost of delivering token and payload to targetChain (wormhole message fee is already included)
+        (cost,) = wormholeRelayer.quoteEVMDeliveryPrice(targetChain, 0, GAS_LIMIT);
     }
 
     function sendCrossChainDeposit(
@@ -54,7 +53,7 @@ contract HelloTokenWithoutSDK is IWormholeReceiver {
         // encode payload
         bytes memory payload = abi.encode(recipient);
 
-        wormholeRelayer.sendVaasToEvm{value: cost - wormhole.messageFee()}(
+        wormholeRelayer.sendVaasToEvm{value: cost}(
             targetChain,
             targetHelloToken,
             payload,
