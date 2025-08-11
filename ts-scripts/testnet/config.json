@@ -1,15 +1,7 @@
 {
-  "sourceChain": 6,
-  "targetChain": 14,
+  "sourceChain": 10004,
+  "targetChain": 10003,
   "chains": [
-    {
-      "description": "Goerli - Ethereum",
-      "chainId": 2,
-      "rpc": "https://ethereum-goerli.publicnode.com",
-      "tokenBridge": "0xF890982f9310df57d00f659cf4fd87e65adEd8d7",
-      "wormholeRelayer": "0x28D8F1Be96f97C1387e94A53e00eCcFb4E75175a",
-      "wormhole": "0x706abc4E45D419950511e474C7B9Ed348A4a716c"
-    },
     {
       "description": "Avalanche testnet fuji",
       "chainId": 6,
@@ -35,14 +27,6 @@
       "wormhole": "0x68605AD7b15c732a30b1BbC62BE8F2A509D74b4D"
     },
     {
-      "description": "Polygon Mumbai",
-      "chainId": 5,
-      "rpc": "https://rpc.ankr.com/polygon_mumbai",
-      "tokenBridge": "0x377D55a7928c046E18eEbb61977e714d2a76472a",
-      "wormholeRelayer": "0x0591C25ebd0580E0d4F27A82Fc2e24E7489CB5e0",
-      "wormhole": "0x0CBE91CF822c73C2315FB05100C2F714765d5c20"
-    },
-    {
       "description": "Moonbase Alpha - Moonbeam",
       "chainId": 16,
       "rpc": "https://rpc.testnet.moonbeam.network",
@@ -51,28 +35,20 @@
       "wormhole": "0xa5B7D85a8f27dd7907dc8FdC21FA5657D5E2F901"
     },
     {
-      "description": "Goerli - Arbitrum",
-      "chainId": 23,
-      "rpc": "https://arbitrum-goerli.publicnode.com",
-      "tokenBridge": "0x23908A62110e21C04F3A4e011d24F901F911744A",
-      "wormholeRelayer": "0xAd753479354283eEE1b86c9470c84D42f229FF43",
-      "wormhole": "0xC7A204bDBFe983FCD8d8E61D02b475D4073fF97e"
+      "description": "Base Sepolia",
+      "chainId": 10004,
+      "rpc": "https://sepolia.base.org",
+      "tokenBridge": "0x86F55A04690fd7815A3D802bD587e83eA888B239",
+      "wormholeRelayer": "0x93BAD53DDfB6132b0aC8E37f6029163E63372cEE",
+      "wormhole": "0x79A1027a6A159502049F10906D333EC57E95F083"
     },
     {
-      "description": "Goerli - Optimism",
-      "chainId": 24,
-      "rpc": "https://optimism-goerli.publicnode.com",
+      "description": "Arbitrum Sepolia",
+      "chainId": 10003,
+      "rpc": "https://sepolia-rollup.arbitrum.io/rpc",
       "tokenBridge": "0xC7A204bDBFe983FCD8d8E61D02b475D4073fF97e",
-      "wormholeRelayer": "0x01A957A525a5b7A72808bA9D10c389674E459891",
+      "wormholeRelayer": "0x7B1bD7a6b4E61c2a123AC6BC2cbfC614437D0470",
       "wormhole": "0x6b9C8671cdDC8dEab9c719bB87cBd3e782bA6a35"
-    },
-    {
-      "description": "Goerli - Base",
-      "chainId": 30,
-      "rpc": "https://goerli.base.org",
-      "tokenBridge": "0xA31aa3FDb7aF7Db93d18DDA4e19F811342EDF780",
-      "wormholeRelayer": "0xea8029CD7FCAEFFcD1F53686430Db0Fc8ed384E1",
-      "wormhole": "0x23908A62110e21C04F3A4e011d24F901F911744A"
     }
   ]
 }

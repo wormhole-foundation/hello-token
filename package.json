@@ -10,6 +10,8 @@
     "deploy": "npm run build; npm run deployMockToken; npm run deployHelloToken",
     "deployMockToken": "ts-node ./ts-scripts/main.ts --deployMockToken",
     "deployHelloToken": "ts-node ./ts-scripts/main.ts --deployHelloToken",
+    "deployMultipleTokens": "ts-node ./ts-scripts/deploy-multiple-tokens.ts",
+    "testMultipleTokens": "ts-node ./ts-scripts/test-hello-multiple-tokens-real.ts",
     "build": "npm install; forge build; forge remappings > remappings.txt; npm run typechain",
     "typechain": "typechain --target ethers-v5 --out-dir ./ts-scripts/ethers-contracts ./out/**/*.json",
     "test": "jest --config ./ts-scripts/jest.config.js",

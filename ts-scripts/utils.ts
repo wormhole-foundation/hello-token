@@ -1,7 +1,6 @@
 import { ethers, Wallet } from "ethers";
 import { readFileSync, writeFileSync } from "fs";
 
-import { HelloToken, HelloToken__factory } from "./ethers-contracts";
 import { ChainId } from "@certusone/wormhole-sdk";
 
 export interface ChainInfo {
@@ -20,6 +19,7 @@ export interface Config {
 }
 export interface DeployedAddresses {
   helloToken: Record<number, string>;
+  helloMultipleTokens?: Record<number, string>;
   erc20s: Record<number, string[]>;
 }
 
@@ -28,7 +28,15 @@ export function getHelloToken(chainId: number) {
   if (!deployed) {
     throw new Error(`No deployed hello token on chain ${chainId}`);
   }
-  return HelloToken__factory.connect(deployed, getWallet(chainId));
+  return new ethers.Contract(deployed, ["function quoteCrossChainDeposit(uint16) view returns (uint256)", "function sendCrossChainDeposit(uint16,address,address,uint256,address,uint256,address) payable"], getWallet(chainId));
+}
+
+export function getHelloMultipleTokens(chainId: number) {
+  const deployed = loadDeployedAddresses().helloMultipleTokens?.[chainId];
+  if (!deployed) {
+    throw new Error(`No deployed hello multiple tokens on chain ${chainId}`);
+  }
+  return new ethers.Contract(deployed, ["function quoteCrossChainDeposit(uint16) view returns (uint256)", "function sendCrossChainDeposit(uint16,address,address,uint256,address,uint256,address) payable"], getWallet(chainId));
 }
 
 export function getChain(chainId: number): ChainInfo {

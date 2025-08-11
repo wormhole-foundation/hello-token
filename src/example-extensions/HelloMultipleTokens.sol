@@ -22,7 +22,7 @@ contract HelloMultipleTokens is TokenSender, TokenReceiver {
             0,
             GAS_LIMIT
         );
-        cost = deliveryCost + wormhole.messageFee();
+        cost = deliveryCost + 2 * wormhole.messageFee();
     }
 
     function sendCrossChainDeposit(
@@ -62,7 +62,7 @@ contract HelloMultipleTokens is TokenSender, TokenReceiver {
             "msg.value must be quoteCrossChainDeposit(targetChain)"
         );
 
-        wormholeRelayer.sendVaasToEvm{value: cost - wormhole.messageFee()}(
+        wormholeRelayer.sendVaasToEvm{value: cost - 2 * wormhole.messageFee()}(
             targetChain,
             targetHelloTokens,
             payload,
