@@ -64,6 +64,34 @@ EVM_PRIVATE_KEY=your_wallet_private_key npm run test
 
 Let's write a [HelloToken contract](https://github.com/wormhole-foundation/hello-token/blob/main/src/HelloToken.sol) that lets users send an arbitrary amount of an IERC20 token to an address of their choosing on another chain.
 
+## Overview
+
+Before diving into the implementation details, it's important to understand 
+how these functions fit into the broader Wormhole SDK workflow.
+
+### Understanding the Workflow
+
+In cross-chain applications, messages and tokens are passed between chains 
+using Wormhole's infrastructure. The functions you will implement here, 
+such as `sendCrossChainDeposit`, play a crucial role in this process 
+by ensuring that messages are properly formatted, sent, and received 
+across different blockchain environments.
+
+### Visual Guide
+
+The following diagram illustrates the typical workflow:
+
+1. **Message Emission**: A message is emitted on the source chain (e.g., Ethereum).
+2. **VAA Creation**: The message is observed by the Guardian Network, 
+   which creates a Verifiable Action Approval (VAA).
+3. **Relaying the VAA**: The VAA is then relayed by a relayer 
+   (either standard or specialized) to the target chain (e.g., Solana).
+4. **Message Processing**: The target chain processes the VAA and 
+   performs the intended action.
+
+Understanding this process will help you follow the code implementation more effectively.
+
+
 ### Valid Tokens
 
 Before getting started, it is important to note that we use Wormhole's **TokenBridge** to transfer tokens between chains!
@@ -169,6 +197,98 @@ function sendCrossChainDeposit(
        amount
     );
 }
+
+### Handling Edge Cases
+
+While the basic functions work for standard scenarios, it's important 
+to account for edge cases that might occur during cross-chain transactions. 
+Below are additional examples to consider:
+
+#### Token Approval Failures
+
+When sending tokens across chains, there might be cases where token approval 
+fails due to insufficient balance or other issues. Implement error handling 
+in your `sendCrossChainDeposit` function to catch and address these issues:
+
+```solidity
+function sendCrossChainDeposit(
+        uint16 targetChain,
+        address targetHelloToken,
+        address recipient,
+        uint256 amount,
+        address token
+) public payable {
+    uint256 cost = quoteCrossChainDeposit(targetChain);
+    require(msg.value == cost, "msg.value != quoteCrossChainDeposit(targetChain)");
+
+    require(IERC20(token).approve(address(this), amount), "Token approval failed");
+
+    IERC20(token).transferFrom(msg.sender, address(this), amount);
+
+    bytes memory payload = abi.encode(recipient);
+    sendTokenWithPayloadToEvm(
+       targetChain,
+       targetHelloToken, // address (on targetChain) to send token and payload
+       payload,
+       0, // receiver value
+       GAS_LIMIT,
+       token, // address of IERC20 token contract
+       amount
+    );
+}
+
+Handling Different Token Decimals
+Cross-chain transactions involving tokens with different decimal places can lead to rounding issues or incorrect amounts being sent. Here's how to handle such cases:
+
+function receivePayloadAndTokens(
+        bytes memory payload,
+        TokenReceived[] memory receivedTokens,
+        bytes32, // sourceAddress
+        uint16,
+        bytes32 // deliveryHash
+) internal override onlyWormholeRelayer {
+    require(receivedTokens.length == 1, "Expected 1 token transfer");
+
+    address recipient = abi.decode(payload, (address));
+
+    uint256 adjustedAmount = receivedTokens[0].amountNormalized;
+    IERC20(receivedTokens[0].tokenAddress).transfer(recipient, adjustedAmount);
+}
+
+Real-World Use Cases
+Consider a scenario where multiple tokens need to be sent in a single cross-chain transaction, such as in a cross-chain lending application. Implement the following logic to manage multiple tokens:
+
+function sendMultiTokenCrossChainDeposit(
+        uint16 targetChain,
+        address targetHelloToken,
+        address recipient,
+        uint256[] memory amounts,
+        address[] memory tokens
+) public payable {
+    require(amounts.length == tokens.length, "Amounts and tokens length mismatch");
+
+    uint256 totalCost = 0;
+    for (uint256 i = 0; i < tokens.length; i++) {
+        uint256 cost = quoteCrossChainDeposit(targetChain);
+        require(msg.value >= cost, "Insufficient payment");
+        totalCost += cost;
+
+        IERC20(tokens[i]).transferFrom(msg.sender, address(this), amounts[i]);
+
+        bytes memory payload = abi.encode(recipient);
+        sendTokenWithPayloadToEvm(
+            targetChain,
+            targetHelloToken,
+            payload,
+            0,
+            GAS_LIMIT,
+            tokens[i],
+            amounts[i]
+        );
+    }
+    require(msg.value == totalCost, "Total cost mismatch");
+}
+
 
 function quoteCrossChainDeposit(uint16 targetChain)
 public view returns (uint256 cost) {
